@@ -1,0 +1,20 @@
+.palet-container {
+  border:1px solid grey;
+  border-radius:3px;
+
+  .form-elem {
+      border:1px solid grey;
+
+  }
+
+}
+
+.resize {
+background-color: #727272;
+width: 10px;
+height: 10px;
+cursor: se-resize;
+position:absolute;
+right: 0;
+bottom: 0;
+}
