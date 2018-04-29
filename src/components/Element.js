@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { DragSource } from 'react-dnd'
-import { ItemTypes } from './ItemTypes'
+import { ItemTypes } from '../commons/ItemTypes'
 import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
 
-import './App.scss'
-//setResizeState(screenId, id, allowState)
-import { setResizeState, clearResizeState, updateHeight, updateElementPosition, updateWidth } from './actions/canvasAction'
+import '../App.scss'
 
-let box = document.getElementById('box')
-let canvasDrawer = null
+import { setResizeState, clearResizeState } from '../actions/canvasAction'
+
+let element = null
 let resizeHandle = null
 
 const style = {
@@ -21,9 +19,8 @@ const style = {
 	cursor: 'move',
 }
 
-const boxSource = {
+const elementSource = {
 	canDrag(props, monitor) {
-		console.log('canDrag', props.resizeElementId, props.id)
 		return props.resizeElementId !== props.id
 	},
 	beginDrag(props) {
@@ -35,23 +32,17 @@ const boxSource = {
 @connect((store) => {
     return {resizeElementId:store.canvas.resizeElementId}
 })
-@DragSource(ItemTypes.BOX, boxSource, (connect, monitor) => ({
+@DragSource(ItemTypes.ELEMENT, elementSource, (connect, monitor) => ({
 	connectDragSource: connect.dragSource(),
-	isDragging: monitor.isDragging(),
+	isDragging: monitor.isDragging()
 }))
-export default class Box extends Component {
+export default class Element extends Component {
 
 	state = {
-		showResizable: false,
-		allowDrag:true,
-		mouseDown:false,
-		position:-6,
-		lastPositionY:0,
+        id:uuidv4(),
 		lastPositionX:0,
-		topHeight:10,
 		height:45,
-		width:85,
-		id:uuidv4()
+		width:85
 	}
 
 	setEvents = (initialPositionX) => {
@@ -59,7 +50,7 @@ export default class Box extends Component {
         this.setState({
             lastPositionX:initialPositionX
         }, () => {
-            box = document.getElementById(`box-${this.state.id}`)
+            element = document.getElementById(`box-${this.state.id}`)
             resizeHandle = document.getElementById(`handle-${this.state.id}`)
             resizeHandle.addEventListener('mousedown', this.initialiseResize, false);
 		})
@@ -76,19 +67,19 @@ export default class Box extends Component {
 		this.setState({
 			width: this.state.width + (e.clientX - this.state.lastPositionX),
 			lastPositionX: e.clientX,
-			height:e.clientY - box.offsetTop
+			height:e.clientY - element.offsetTop
 		})
 	}
 
 	 stopResizing = (e) => {
 		 window.removeEventListener('mousemove', this.startResizing, false);
 		 window.removeEventListener('mouseup', this.stopResizing, false);
-		 console.log('stop')
 		 this.props.dispatch(clearResizeState())
 	 }
 
 
 	render() {
+
 		const {
 			hideSourceOnDrag,
 			left,

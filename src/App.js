@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 import './App.scss'
 
-import { default as TouchBackend } from 'react-dnd-touch-backend'
 import { DragDropContext } from 'react-dnd'
 
-import { Grid, Segment } from 'semantic-ui-react'
-
-import FormItem from './FormItem'
-import Canvas from './Canvas'
+import DragItem from './components/DragItem/DragItem'
+import Canvas from './components/Canvas'
 
 import HTML5Backend from 'react-dnd-html5-backend'
 
-//@DragDropContext(TouchBackend({ enableMouseEvents: true }))
 @DragDropContext(HTML5Backend)
 export default class App extends Component {
   render() {
@@ -20,7 +16,7 @@ export default class App extends Component {
         <div className="row">
           <div className="col-3">
             <div className="palet-container">
-              <FormItem name="TexField" label="TextField"/>
+              <DragItem name="TexField" label="TextField"/>
             </div>
           </div>
           <div className="col-9">
