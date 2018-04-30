@@ -6,7 +6,7 @@ import uuidv4 from 'uuid/v4'
 
 import '../App.scss'
 
-import { setResizeState, clearResizeState } from '../actions/canvasAction'
+import { setResizeState, clearResizeState, resizeElement } from '../actions/canvasAction'
 
 let element = null
 let resizeHandle = null
@@ -40,9 +40,7 @@ export default class Element extends Component {
 
 	state = {
         id:uuidv4(),
-		lastPositionX:0,
-		height:45,
-		width:85
+		lastPositionX:0
 	}
 
 	setEvents = (initialPositionX) => {
@@ -64,10 +62,11 @@ export default class Element extends Component {
 
 	startResizing = (e) => {
         this.props.dispatch(setResizeState(this.props.id))
+
+        this.props.dispatch(resizeElement(1, this.props.id , e.clientY - element.offsetTop, this.props.width + (e.clientX - this.state.lastPositionX)))
+
 		this.setState({
-			width: this.state.width + (e.clientX - this.state.lastPositionX),
-			lastPositionX: e.clientX,
-			height:e.clientY - element.offsetTop
+			lastPositionX: e.clientX
 		})
 	}
 
@@ -86,13 +85,13 @@ export default class Element extends Component {
 			top,
 			connectDragSource,
 			isDragging,
-			children,
+			children
 		} = this.props
 
-		const {
-			height,
-			width
-		} = this.state
+
+		const height = `${this.props.height}px`
+        const width = `${this.props.width}px`
+
 
 		if (isDragging && hideSourceOnDrag) {
 			return null

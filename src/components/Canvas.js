@@ -4,7 +4,8 @@ import {ItemTypes} from '../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
 import {addElementToScreen, updateElementPosition} from '../actions/canvasAction'
-import Box from './Element'
+import ContentElement from './ContentElement'
+import Element from './Element'
 
 const style = {
     border: '1px solid gray',
@@ -20,6 +21,7 @@ const elementTarget = {
         //Update item list.
 
         const item = monitor.getItem()
+        console.log(item)
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
@@ -29,8 +31,8 @@ const elementTarget = {
 
         } else {
 
-            //const clientOffset = monitor.getClientOffset();
-            const clientOffset = monitor.getDifferenceFromInitialOffset()
+            const clientOffset = monitor.getClientOffset();
+            //const clientOffset = monitor.getDifferenceFromInitialOffset()
             const componentRect = findDOMNode(component).getBoundingClientRect()
 
             const left = Math.round(clientOffset.x - componentRect.left);
@@ -67,7 +69,7 @@ export default class TargetBox extends Component {
             <div id="canvasDrawer" style={style}>
                 {screenList[1].map((item) => {
                     return (
-                        <Box
+                        <Element
                             key={item.id}
                             id={item.id}
                             left={item.left}
@@ -76,8 +78,8 @@ export default class TargetBox extends Component {
                             width={item.width}
                             hideSourceOnDrag
                         >
-                            Hola
-                        </Box>
+                            <ContentElement type={item.type} />
+                        </Element>
                     )
 
                 })}

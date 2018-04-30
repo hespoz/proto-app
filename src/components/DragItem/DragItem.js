@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { ItemTypes } from '../../commons/ItemTypes'
 import { DragSource } from 'react-dnd'
+import ContentElement from '../ContentElement'
 import './DragItem.scss'
 
 const formItemSource = {
@@ -28,8 +29,8 @@ export default class DragItem extends Component {
         const dropEffect = 'copy'
 
         return connectDragSource(
-            <div className='drag-item-container' style={{ opacity: isDragging ? 0.4 : 1 }}>
-                {this.props.label}
+            <div className='drag-item-container' style={{ opacity: isDragging ? 0.4 : 1}}>
+                <ContentElement type={this.props.name} />
             </div>,
             { dropEffect }
         )

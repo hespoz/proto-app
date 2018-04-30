@@ -1,20 +1,25 @@
-.palet-container {
-  border:1px solid grey;
-  border-radius:3px;
+.main-container {
+   margin-top: 18px;
 
-  .form-elem {
+  .palet-container {
+    border:1px solid grey;
+    border-radius:3px;
+    padding: 8px;
+
+    .form-elem {
       border:1px solid grey;
+    }
 
   }
 
+  .resize {
+    background-color: #727272;
+    width: 10px;
+    height: 10px;
+    cursor: se-resize;
+    position:absolute;
+    right: 0;
+    bottom: 0;
+  }
 }
 
-.resize {
-background-color: #727272;
-width: 10px;
-height: 10px;
-cursor: se-resize;
-position:absolute;
-right: 0;
-bottom: 0;
-}
