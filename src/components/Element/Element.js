@@ -1,23 +1,18 @@
 import React, { Component } from 'react'
 import { DragSource } from 'react-dnd'
-import { ItemTypes } from '../commons/ItemTypes'
+import { ItemTypes } from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
 
-import '../App.scss'
+import '../../App.scss'
+import './Element.scss'
 
-import { setResizeState, clearResizeState, resizeElement } from '../actions/canvasAction'
+import { setResizeState, clearResizeState, resizeElement } from '../../actions/canvasAction'
 
 let element = null
 let resizeHandle = null
 
-const style = {
-	position: 'absolute',
-	border: '1px dashed gray',
-	backgroundColor: 'white',
-	padding: '0.5rem 1rem',
-	cursor: 'move',
-}
+const style = {}
 
 const elementSource = {
 	canDrag(props, monitor) {
@@ -100,7 +95,7 @@ export default class Element extends Component {
 		
 		return connectDragSource(
 
-				<div id={`box-${this.state.id}`} style={{ ...style, left, top, height, width}}>
+				<div id={`box-${this.state.id}`} className='element-wrapper' style={{ ...style, left, top, height, width}}>
 
 					<div id={`handle-${this.state.id}`}  className="resize" onMouseEnter={(e) => {
 						this.setEvents(e.clientX)

@@ -8,7 +8,7 @@ export function addElementToScreen(screenId, type, top, left){
           type:type,
           top: top,
           left: left,
-          height:35,
+          height:45,
           width:200
         }})
     }

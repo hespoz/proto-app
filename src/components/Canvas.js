@@ -4,8 +4,8 @@ import {ItemTypes} from '../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
 import {addElementToScreen, updateElementPosition} from '../actions/canvasAction'
-import ContentElement from './ContentElement'
-import Element from './Element'
+import ContentElement from '../commons/ContentElement/ContentElement'
+import Element from './Element/Element'
 
 const style = {
     border: '1px solid gray',
@@ -38,7 +38,7 @@ const elementTarget = {
             const left = Math.round(clientOffset.x - componentRect.left);
             const top = Math.round(clientOffset.y - componentRect.top);
 
-            props.dispatch(addElementToScreen(1, item.name, top, left))
+            props.dispatch(addElementToScreen(1, item.type, top, left))
         }
 
 

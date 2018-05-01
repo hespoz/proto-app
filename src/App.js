@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {ControlType} from './commons/ControlType'
 import './App.scss'
 
 import {DragDropContext} from 'react-dnd'
@@ -16,11 +17,12 @@ export default class App extends Component {
                 <div className="row main-container">
                     <div className="col-3">
                         <div className="palet-container">
-                            <DragItem name="TexField" label="TextField"/>
-                            <DragItem name="TextArea" label="Text Area"/>
-                            <DragItem name="Label" label="Label"/>
-                            <DragItem name="Button" label="Button"/>
-                            <DragItem name="Checkbox" label="Checkbox"/>
+                            <DragItem type={ControlType.TEXT_FIELD}/>
+                            <DragItem type={ControlType.TEXT_AREA}/>
+                            <DragItem type={ControlType.LABEL}/>
+                            <DragItem type={ControlType.BUTTON}/>
+                            <DragItem type={ControlType.CHECKBOX}/>
+                            <DragItem type={ControlType.OPTION}/>
                         </div>
                     </div>
                     <div className="col-9">
