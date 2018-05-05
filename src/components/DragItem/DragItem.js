@@ -30,7 +30,7 @@ export default class DragItem extends Component {
 
         return connectDragSource(
             <div className='drag-item-container' style={{ opacity: isDragging ? 0.4 : 1}}>
-                <ContentElement type={this.props.type} />
+                <ContentElement type={this.props.type} label={this.props.type}/>
             </div>,
             { dropEffect }
         )

@@ -21,7 +21,7 @@ const elementTarget = {
         //Update item list.
 
         const item = monitor.getItem()
-        console.log(item)
+        console.log("Canvas", item)
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
@@ -78,7 +78,7 @@ export default class TargetBox extends Component {
                             width={item.width}
                             hideSourceOnDrag
                         >
-                            <ContentElement type={item.type} />
+                            <ContentElement id={item.id} type={item.type} label={item.label} dropedElement/>
                         </Element>
                     )
 

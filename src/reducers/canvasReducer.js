@@ -1,4 +1,4 @@
-import { ADD_ELEMENT_TO_SCREEN, UPDATE_ELEMENT_POSITION, SET_RESIZE_STATE, CLEAR_RESIZE_STATE, UPDATE_BOX_HEIGHT, UPDATE_BOX_WIDTH, RESIZE_ELEMENT } from '../commons/constants'
+import { ADD_ELEMENT_TO_SCREEN, UPDATE_ELEMENT_POSITION, SET_RESIZE_STATE, CLEAR_RESIZE_STATE, UPDATE_BOX_HEIGHT, UPDATE_BOX_WIDTH, RESIZE_ELEMENT, UPDATE_LABEL } from '../commons/constants'
 import _ from 'lodash'
 
 export default function reducer(state={
@@ -98,6 +98,23 @@ export default function reducer(state={
             return {
                 ...state,
                 screenList: screenListCopy5
+            }
+
+            break;
+
+        case UPDATE_LABEL:
+            let screenListCopy6 = _.cloneDeep(state.screenList)
+
+            screenListCopy6[action.screenId] = screenListCopy6[action.screenId].map((element) => {
+                if(element.id === action.element.id){
+                    element.label = action.element.label
+                }
+                return element
+            })
+
+            return {
+                ...state,
+                screenList: screenListCopy6
             }
 
             break;
