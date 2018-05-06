@@ -36,6 +36,7 @@
     "raf": "3.4.0",
     "re-resizable": "^4.4.8",
     "react": "^16.3.2",
+    "react-contextmenu": "^2.9.2",
     "react-dev-utils": "^5.0.1",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",

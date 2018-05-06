@@ -1,132 +1,111 @@
-import { ADD_ELEMENT_TO_SCREEN, UPDATE_ELEMENT_POSITION, SET_RESIZE_STATE, CLEAR_RESIZE_STATE, UPDATE_BOX_HEIGHT, UPDATE_BOX_WIDTH, RESIZE_ELEMENT, UPDATE_LABEL } from '../commons/constants'
+import {
+    ADD_ELEMENT_TO_SCREEN,
+    UPDATE_ELEMENT_POSITION,
+    SET_RESIZE_STATE,
+    CLEAR_RESIZE_STATE,
+    RESIZE_ELEMENT,
+    UPDATE_LABEL,
+    SELECT_ELEMENT
+} from '../commons/constants'
 import _ from 'lodash'
 
-export default function reducer(state={
-    screenList:{1:[]},
-    resizeElementId:null
+
+const addElement = (state, action) => {
+    const screenListCopy = _.cloneDeep(state.screenList)
+
+    screenListCopy[action.screenId].push(action.element)
+
+    return {...state, screenList: screenListCopy, selectedElements: [action.element.id]}
+}
+
+const updateElementPosition = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+
+    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+        if (element.id === action.element.id) {
+            element.top = action.element.top
+            element.left = action.element.left
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
+
+const resizeElement = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+
+    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+        if (element.id === action.element.id) {
+            element.height = action.element.height
+            element.width = action.element.width
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
+
+const updateLabel = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+
+    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+        if (element.id === action.element.id) {
+            element.label = action.element.label
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
+
+const selectElement = (state, action) => {
+    let selectedElements = _.cloneDeep(state.selectedElements)
+
+    selectedElements=[]
+
+    selectedElements.push(action.element.id)
+
+    return {...state, selectedElements: selectedElements}
+}
+
+
+export default function reducer(state = {
+    screenList: {1: []},
+    resizeElementId: null,
+    selectedElements:[]
 }, action) {
-    switch(action.type){
+    switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
-
-            let screenListCopy = _.cloneDeep(state.screenList)
-            screenListCopy[action.screenId].push(action.element)
-
-            return {...state, screenList: screenListCopy}
-
-          break;
+            return addElement(state, action)
+            break;
         case UPDATE_ELEMENT_POSITION:
-
-              let screenListCopy3 = _.cloneDeep(state.screenList)
-
-
-              screenListCopy3[action.screenId] = screenListCopy3[action.screenId].map((element) => {
-                  if(element.id === action.element.id){
-                    element.top = action.element.top
-                    element.left = action.element.left
-                  }
-                  return element
-              })
-
-              return {
-                ...state,
-                screenList: screenListCopy3
-              }
-
+            return updateElementPosition(state, action)
             break;
-        case UPDATE_BOX_HEIGHT:
-            let screenListCopy2 = _.cloneDeep(state.screenList)
-
-            screenListCopy2[action.screenId] = screenListCopy2[action.screenId].map((element) => {
-                if(element.id === action.element.id){
-                  element.height = action.element.height
-                  if(action.element.delta > 0) {
-                    element.top =   element.top - action.element.delta
-                  } else {
-                    element.top =   element.top + Math.abs(action.element.delta)
-                  }
-                  console.log('action.element', action.element)
-                }
-                return element
-            })
-
-            return {
-              ...state,
-              screenList: screenListCopy2
-            }
-
-            break;
-
-
-        case UPDATE_BOX_WIDTH:
-                let screenListCopy4 = _.cloneDeep(state.screenList)
-
-                screenListCopy4[action.screenId] = screenListCopy4[action.screenId].map((element) => {
-                    if(element.id === action.element.id){
-                      element.width = action.element.width
-                      
-                      if(action.element.delta > 0) {
-                        element.left =   element.left - action.element.delta
-                      } else {
-                        element.left =   element.left + Math.abs(action.element.delta)
-                      }
-
-
-                    }
-                    return element
-                })
-
-                return {
-                  ...state,
-                  screenList: screenListCopy4
-                }
-
-                break;
-
         case RESIZE_ELEMENT:
-            let screenListCopy5 = _.cloneDeep(state.screenList)
-
-            screenListCopy5[action.screenId] = screenListCopy5[action.screenId].map((element) => {
-                console.log("entro", action.element.id)
-                if(element.id === action.element.id){
-                    console.log("entro 1", action.element.id)
-                    element.height = action.element.height
-                    element.width = action.element.width
-                }
-                return element
-            })
-
-            return {
-                ...state,
-                screenList: screenListCopy5
-            }
-
+            return resizeElement(state, action)
             break;
-
         case UPDATE_LABEL:
-            let screenListCopy6 = _.cloneDeep(state.screenList)
-
-            screenListCopy6[action.screenId] = screenListCopy6[action.screenId].map((element) => {
-                if(element.id === action.element.id){
-                    element.label = action.element.label
-                }
-                return element
-            })
-
-            return {
-                ...state,
-                screenList: screenListCopy6
-            }
-
+            return updateLabel(state, action)
             break;
-
         case SET_RESIZE_STATE:
             return {...state, resizeElementId: action.id}
             break;
-
         case CLEAR_RESIZE_STATE:
             return {...state, resizeElementId: null}
             break;
-
+        case SELECT_ELEMENT:
+            return selectElement(state, action)
+            break;
         default:
             break;
     }

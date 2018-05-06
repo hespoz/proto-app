@@ -5,7 +5,8 @@ import {
     CLEAR_RESIZE_STATE,
     UPDATE_ELEMENT_POSITION,
     RESIZE_ELEMENT,
-    UPDATE_LABEL
+    UPDATE_LABEL,
+    SELECT_ELEMENT
 } from '../commons/constants'
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -67,6 +68,17 @@ export function updateLabel(screenId, id, label) {
             type: UPDATE_LABEL, screenId: screenId, element: {
                 id: id,
                 label: label
+            }
+        })
+    }
+}
+
+export function selectElement(screenId, id, multiple) {
+    return function (dispatch) {
+        dispatch({
+            type: SELECT_ELEMENT, screenId: screenId, element: {
+                id: id,
+                multiple: multiple
             }
         })
     }
