@@ -7,65 +7,6 @@ import {updateLabel} from '../../actions/canvasAction'
 
 import './ContentElement.scss'
 
-
-const renderElementByType = (type, dropedElement, onDoubleClickHandler, edit, label, keyPressHandler, inputChangeHandler) => {
-    switch(type){
-        case ControlType.TEXT_FIELD:
-            return (<div className='text-element field'>Text field</div>)
-            break;
-        case ControlType.TEXT_AREA:
-            return (<div className='text-element area'>Text Area</div>)
-            break;
-        case ControlType.LABEL:
-            return (<div className='center-content'>Label</div>)
-            break;
-        case ControlType.BUTTON:
-            return (
-                <div className='center-content'>
-                    {!edit ?
-                        (
-                            <div className={dropedElement ? 'content' : ''} onDoubleClick={dropedElement ? onDoubleClickHandler : null}>
-                                {label}
-                            </div>
-                        )
-                        :
-                        (
-                            <div>
-                                <input type='text' onKeyPress={keyPressHandler} onChange={inputChangeHandler} value={label}/>
-                            </div>
-                        )
-                    }
-
-
-                </div>
-            )
-            break;
-        case ControlType.CHECKBOX:
-            return (
-                <div className='select-content'>
-                    <div className='left'>
-                        <div className='square'></div>
-                    </div>
-                    <div className='right'>Checkbox</div>
-                </div>
-            )
-            break;
-        case ControlType.OPTION:
-            return (
-                <div className='select-content'>
-                    <div className='left'>
-                        <div className='circle'></div>
-                    </div>
-                    <div className='right'>Option</div>
-                </div>
-            )
-            break;
-        default:
-            return null
-            break;
-    }
-}
-
 //If we have the flag droped element, we bind events for edit.
 @connect((store) => {
     return {
@@ -95,10 +36,83 @@ export default class ContentElement extends Component {
         }
     }
 
+    onSaveHandler = (e) => {
+        this.setState({edit: false}, () => {
+            this.props.dispatch(updateLabel(1, this.props.id, this.state.label))
+        })
+    }
+
+    renderWrapperClass = () => {
+        const { type } = this.props
+        if(type === ControlType.TEXT_FIELD) {
+            return (<div className='text-element field'>
+
+                {this.renderEditable()}
+
+            </div>)
+        } else if(type === ControlType.TEXT_AREA) {
+            return (<div className='text-element area'>
+
+                {this.renderEditable()}
+
+            </div>)
+        } else if(type === ControlType.LABEL || type === ControlType.BUTTON) {
+            return (
+                <div className='center-content'>
+
+                    {this.renderEditable()}
+
+                </div>
+            )
+        } else if(type === ControlType.CHECKBOX || type === ControlType.OPTION) {
+            return (
+                <div className='select-content'>
+                    <div className='left'>
+                        <div className={type === ControlType.CHECKBOX ? 'square' : 'circle'}></div>
+                    </div>
+                    <div className='right'>
+                        {this.renderEditable()}
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    renderEditable = () => {
+
+        const label = (
+            <div className={this.props.dropedElement ? 'content' : ''} onDoubleClick={this.props.dropedElement ? this.onDoubleClickHandler : null}>
+                {this.state.label}
+            </div>
+        )
+
+        const editArea = this.props.type !== ControlType.TEXT_AREA ?
+            (
+                <div>
+                    <input type='text' onKeyPress={this.keyPressHandler} onChange={this.inputChangeHandler} value={this.state.label}/>
+                </div>
+            )
+            :
+            (
+                <div className='edit'>
+                    <div className='text-wrapper'>
+                        <textarea  cols="25" onChange={this.inputChangeHandler}>
+                            {this.state.label}
+                        </textarea>
+                    </div>
+                    <div>
+                        <button onClick={this.onSaveHandler}>Save</button>
+                    </div>
+                </div>
+            )
+
+        return !this.state.edit ? label : editArea
+    }
+
     render() {
         return (
             <div className='content-element'>
-                {renderElementByType(this.props.type, this.props.dropedElement, this.onDoubleClickHandler, this.state.edit, this.state.label, this.keyPressHandler, this.inputChangeHandler)}
+                {this.renderWrapperClass()}
             </div>
         )
     }
