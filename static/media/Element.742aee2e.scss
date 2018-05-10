@@ -1,0 +1,10 @@
+.element-wrapper {
+  position: absolute;
+  padding: 1px;
+  cursor: move;
+
+  &.selected {
+    border: 1px dashed gray;
+  }
+
+}
