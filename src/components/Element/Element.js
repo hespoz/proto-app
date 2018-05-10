@@ -5,8 +5,6 @@ import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
 import _ from 'lodash'
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
-
 import '../../App.scss'
 import './Element.scss'
 
@@ -115,22 +113,7 @@ export default class Element extends Component {
                 }}
                 ></div>
 
-                <ContextMenuTrigger id="some_unique_identifier">
                 {children}
-                </ContextMenuTrigger>
-
-                <ContextMenu id="some_unique_identifier">
-                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-                        ContextMenu Item 1
-                    </MenuItem>
-                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-                        ContextMenu Item 2
-                    </MenuItem>
-                    <MenuItem divider />
-                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-                        ContextMenu Item 3
-                    </MenuItem>
-                </ContextMenu>
 
             </div>,
         )
