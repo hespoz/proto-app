@@ -11,8 +11,7 @@ const style = {
     border: '1px solid gray',
     height: '630px',
     width: '100%',
-    padding: '2rem',
-    textAlign: 'center',
+    padding: '15px',
     position: 'relative'
 }
 
@@ -21,7 +20,6 @@ const elementTarget = {
         //Update item list.
 
         const item = monitor.getItem()
-        console.log("Canvas", item)
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
@@ -67,6 +65,7 @@ export default class TargetBox extends Component {
 
         return connectDropTarget(
             <div id="canvasDrawer" style={style}>
+                <h3>Canvas</h3>
                 {screenList[1].map((item) => {
                     return (
                         <Element

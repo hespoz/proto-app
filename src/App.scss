@@ -1,16 +1,33 @@
+.title {
+  margin-top:10px !important;
+}
+
 .main-container {
    margin-top: 18px;
+   display:flex;
 
-  .palet-container {
-    border:1px solid grey;
-    border-radius:3px;
-    padding: 8px;
+  .left {
+    width:20%;
+    padding-left: 10px;
+    padding-right: 10px;
 
-    .form-elem {
+    .palet-container {
       border:1px solid grey;
-    }
+      border-radius:3px;
+      padding: 17px;
 
+      .form-elem {
+        border:1px solid grey;
+      }
+
+    }
   }
+
+  .right {
+    width:80%;
+  }
+
+
 
   .resize {
     background-color: #727272;

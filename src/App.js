@@ -14,9 +14,15 @@ export default class App extends Component {
     render() {
         return (
             <div className="container-fluid">
+                <h3 className="title">Form creator</h3>
+                <ul>
+                    <li>Click on element and use the square at the bottom corner to resize.</li>
+                    <li>Double click into the text of the dropped element to edit text.</li>
+                </ul>
                 <div className="row main-container">
-                    <div className="col-3">
+                    <div className="left">
                         <div className="palet-container">
+                            <h3>Draggable elements</h3>
                             <DragItem type={ControlType.TEXT_FIELD}/>
                             <DragItem type={ControlType.TEXT_AREA}/>
                             <DragItem type={ControlType.LABEL}/>
@@ -25,7 +31,7 @@ export default class App extends Component {
                             <DragItem type={ControlType.OPTION}/>
                         </div>
                     </div>
-                    <div className="col-9">
+                    <div className="right">
                         <Canvas/>
                     </div>
                 </div>
