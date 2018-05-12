@@ -6,15 +6,16 @@
    margin-top: 18px;
    display:flex;
 
-  .left {
-    width:20%;
-    padding-left: 10px;
-    padding-right: 10px;
+  .left-panel {
+    width: 210px;
+    min-width: 210px;
+
 
     .palet-container {
       border:1px solid grey;
       border-radius:3px;
-      padding: 17px;
+      padding: 4px;
+      overflow:auto;
 
       .form-elem {
         border:1px solid grey;
@@ -23,20 +24,18 @@
     }
   }
 
-  .right {
+  .center-panel {
     width:80%;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-
-
-  .resize {
-    background-color: #727272;
-    width: 10px;
-    height: 10px;
-    cursor: se-resize;
-    position:absolute;
-    right: 0px;
-    bottom: 0px;
+  .right-panel {
+    width:20%;
+    > div {
+      border:1px solid;
+    }
   }
+
 }
 

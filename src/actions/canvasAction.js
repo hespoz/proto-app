@@ -6,7 +6,8 @@ import {
     UPDATE_ELEMENT_POSITION,
     RESIZE_ELEMENT,
     UPDATE_LABEL,
-    SELECT_ELEMENT
+    SELECT_ELEMENT,
+    REMOVE_ELEMENT
 } from '../commons/constants'
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -80,6 +81,14 @@ export function selectElement(screenId, id, multiple) {
                 id: id,
                 multiple: multiple
             }
+        })
+    }
+}
+
+export function removeElement(screenId, id) {
+    return function (dispatch) {
+        dispatch({
+            type: REMOVE_ELEMENT, screenId: screenId, id: id
         })
     }
 }

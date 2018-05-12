@@ -5,7 +5,8 @@ import {
     CLEAR_RESIZE_STATE,
     RESIZE_ELEMENT,
     UPDATE_LABEL,
-    SELECT_ELEMENT
+    SELECT_ELEMENT,
+    REMOVE_ELEMENT
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -78,6 +79,21 @@ const selectElement = (state, action) => {
     return {...state, selectedElements: selectedElements}
 }
 
+const removeElement = (state, action) => {
+    let screenListCopy = Object.assign({}, state.screenList)
+
+    console.log(_.remove(screenListCopy[action.screenId], (e) => {
+       return e.id === action.id
+    }))
+    screenListCopy[action.screenId] = _.pull(screenListCopy[action.screenId], {id: action.id});
+
+
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
 
 export default function reducer(state = {
     screenList: {1: []},
@@ -105,6 +121,9 @@ export default function reducer(state = {
             break;
         case SELECT_ELEMENT:
             return selectElement(state, action)
+            break;
+        case REMOVE_ELEMENT:
+            return removeElement(state, action)
             break;
         default:
             break;

@@ -1,19 +1,13 @@
 import React, {Component} from 'react'
 import {DropTarget} from 'react-dnd'
-import {ItemTypes} from '../commons/ItemTypes'
+import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
-import {addElementToScreen, updateElementPosition} from '../actions/canvasAction'
-import ContentElement from '../commons/ContentElement/ContentElement'
-import Element from './Element/Element'
+import {addElementToScreen, updateElementPosition} from '../../actions/canvasAction'
+import ContentElement from '../../commons/ContentElement/ContentElement'
+import Element from '../Element/Element'
+import './Canvas.scss'
 
-const style = {
-    border: '1px solid gray',
-    height: '630px',
-    width: '100%',
-    padding: '15px',
-    position: 'relative'
-}
 
 const elementTarget = {
     drop(props, monitor, component) {
@@ -44,6 +38,36 @@ const elementTarget = {
     }
 }
 
+const browser = (screen) => {
+    return (
+        <div id="canvasDrawer" className='browser'>
+            <div className='nav-bar'>
+                <div className='icon red'></div>
+                <div className='icon yellow'></div>
+                <div className='icon green'></div>
+                <div className='url'></div>
+            </div>
+            <div>
+                {screen.map((item) => {
+                    return (
+                        <Element
+                            key={item.id}
+                            id={item.id}
+                            left={item.left}
+                            top={item.top}
+                            height={item.height}
+                            width={item.width}
+                            hideSourceOnDrag
+                        >
+                            <ContentElement id={item.id} type={item.type} label={item.label} dropedElement/>
+                        </Element>
+                    )
+
+                })}
+            </div>
+        </div>
+    )
+}
 
 @connect((store) => {
     return {
@@ -64,24 +88,8 @@ export default class TargetBox extends Component {
         const {screenList} = this.props
 
         return connectDropTarget(
-            <div id="canvasDrawer" style={style}>
-                <h3>Canvas</h3>
-                {screenList[1].map((item) => {
-                    return (
-                        <Element
-                            key={item.id}
-                            id={item.id}
-                            left={item.left}
-                            top={item.top}
-                            height={item.height}
-                            width={item.width}
-                            hideSourceOnDrag
-                        >
-                            <ContentElement id={item.id} type={item.type} label={item.label} dropedElement/>
-                        </Element>
-                    )
-
-                })}
+            <div>
+                {browser(screenList[1])}
             </div>,
         )
     }

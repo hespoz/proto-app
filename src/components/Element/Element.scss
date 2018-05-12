@@ -7,4 +7,30 @@
     border: 1px dashed gray;
   }
 
+  .remove-btn {
+    display:flex;
+    position:absolute;
+    top: -9px;
+    right: -4px;
+    border-radius:50%;
+    color:white;
+    background-color: #727272;
+    cursor:pointer;
+    width: 15px;
+    height: 15px;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .resize {
+    background-color: #727272;
+    width: 10px;
+    height: 10px;
+    cursor: se-resize;
+    position:absolute;
+    right: 0px;
+    bottom: 0px;
+  }
+
 }

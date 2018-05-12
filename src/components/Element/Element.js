@@ -8,7 +8,7 @@ import _ from 'lodash'
 import '../../App.scss'
 import './Element.scss'
 
-import {setResizeState, clearResizeState, resizeElement, selectElement} from '../../actions/canvasAction'
+import {setResizeState, clearResizeState, resizeElement, selectElement, removeElement} from '../../actions/canvasAction'
 
 let element = null
 let resizeHandle = null
@@ -44,10 +44,11 @@ export default class Element extends Component {
         lastPositionX: 0
     }
 
-    setEvents = (initialPositionX) => {
+    setEvents = (initialPositionX,initialPositionY) => {
 
         this.setState({
-            lastPositionX: initialPositionX
+            lastPositionX: initialPositionX,
+            lastPositionY: initialPositionY
         }, () => {
             element = document.getElementById(`box-${this.state.id}`)
             resizeHandle = document.getElementById(`handle-${this.state.id}`)
@@ -64,10 +65,11 @@ export default class Element extends Component {
     startResizing = (e) => {
         this.props.dispatch(setResizeState(this.props.id))
 
-        this.props.dispatch(resizeElement(1, this.props.id, e.clientY - element.offsetTop, this.props.width + (e.clientX - this.state.lastPositionX)))
+        this.props.dispatch(resizeElement(1, this.props.id, this.props.height + (e.clientY - this.state.lastPositionY), this.props.width + (e.clientX - this.state.lastPositionX)))
 
         this.setState({
-            lastPositionX: e.clientX
+            lastPositionX: e.clientX,
+            lastPositionY: e.clientY,
         })
     }
 
@@ -108,8 +110,13 @@ export default class Element extends Component {
         return connectDragSource(
             <div id={`box-${this.state.id}`} className={`element-wrapper ${this.isElementSelected() ? 'selected' : ''}`} style={{...style, left, top, height, width }} onClick={this.selectElement}>
 
+                <div id={`remove-${this.state.id}`} className='remove-btn'  style={!this.isElementSelected() ? { display:'none' } : {}} onClick={(e) => this.props.dispatch(removeElement(1, this.props.id))}>
+                    x
+                </div>
+
                 <div id={`handle-${this.state.id}`} className='resize' style={!this.isElementSelected() ? { display:'none' } : {}} onMouseEnter={(e) => {
-                    this.setEvents(e.clientX)
+                    console.log(e.clientX)
+                    this.setEvents(e.clientX, e.clientY)
                 }}
                 ></div>
 
