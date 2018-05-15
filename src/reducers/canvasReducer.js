@@ -6,7 +6,10 @@ import {
     RESIZE_ELEMENT,
     UPDATE_LABEL,
     SELECT_ELEMENT,
-    REMOVE_ELEMENT
+    REMOVE_ELEMENT,
+    SET_HOLD,
+    CLEAR_SELECTIONS,
+    COPY_SELECTION
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -72,7 +75,10 @@ const updateLabel = (state, action) => {
 const selectElement = (state, action) => {
     let selectedElements = _.cloneDeep(state.selectedElements)
 
-    selectedElements=[]
+
+    if(!state.onHold) {
+        selectedElements=[]
+    }
 
     selectedElements.push(action.element.id)
 
@@ -98,7 +104,9 @@ const removeElement = (state, action) => {
 export default function reducer(state = {
     screenList: {1: []},
     resizeElementId: null,
-    selectedElements:[]
+    selectedElements:[],
+    onHold:false,
+    clipboardElements:[]
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
@@ -124,6 +132,15 @@ export default function reducer(state = {
             break;
         case REMOVE_ELEMENT:
             return removeElement(state, action)
+            break;
+        case SET_HOLD:
+            return {...state, onHold: action.onHold}
+            break;
+        case CLEAR_SELECTIONS:
+                return {...state, selectedElements: []}
+            break;
+        case COPY_SELECTION:
+            return {...state}
             break;
         default:
             break;

@@ -30,7 +30,8 @@ const elementSource = {
 @connect((store) => {
     return {
         resizeElementId: store.canvas.resizeElementId,
-        selectedElements: store.canvas.selectedElements
+        selectedElements: store.canvas.selectedElements,
+        onHold: store.canvas.onHold
     }
 })
 @DragSource(ItemTypes.ELEMENT, elementSource, (connect, monitor) => ({
@@ -84,7 +85,7 @@ export default class Element extends Component {
     }
 
     selectElement = () => {
-        this.props.dispatch(selectElement(1, this.props.id, false))
+        this.props.dispatch(selectElement(1, this.props.id, this.props.onHold))
     }
 
     render() {

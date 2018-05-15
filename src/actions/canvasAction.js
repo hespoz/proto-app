@@ -7,7 +7,10 @@ import {
     RESIZE_ELEMENT,
     UPDATE_LABEL,
     SELECT_ELEMENT,
-    REMOVE_ELEMENT
+    REMOVE_ELEMENT,
+    SET_HOLD,
+    CLEAR_SELECTIONS,
+    COPY_SELECTION
 } from '../commons/constants'
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -92,3 +95,28 @@ export function removeElement(screenId, id) {
         })
     }
 }
+
+export function setHold(hold) {
+    return function (dispatch) {
+        dispatch({
+            type: SET_HOLD, onHold:hold
+        })
+    }
+}
+
+export function clearAllSelections() {
+    return function (dispatch) {
+        dispatch({type: CLEAR_SELECTIONS})
+    }
+}
+
+export function copy() {
+    return function (dispatch) {
+        dispatch({type: COPY_SELECTION})
+    }
+}
+
+
+
+
+

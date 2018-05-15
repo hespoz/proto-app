@@ -6,6 +6,7 @@ import {DragDropContext} from 'react-dnd'
 
 import DragItem from './components/DragItem/DragItem'
 import Canvas from './components/Canvas/Canvas'
+import ConfigPanel from './components/ConfigPanel/ConfigPanel'
 
 import HTML5Backend from 'react-dnd-html5-backend'
 
@@ -36,9 +37,7 @@ export default class App extends Component {
                     </div>
 
                     <div className="right-panel">
-                        <div>
-                            Config tab
-                        </div>
+                        <ConfigPanel/>
                     </div>
 
                 </div>
