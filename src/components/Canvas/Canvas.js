@@ -3,7 +3,7 @@ import {DropTarget} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
-import {addElementToScreen, updateElementPosition, setHold, clearAllSelections} from '../../actions/canvasAction'
+import {addElementToScreen, updateElementPosition, setHold, clearAllSelections, copy, paste} from '../../actions/canvasAction'
 import ContentElement from '../../commons/ContentElement/ContentElement'
 import Element from '../Element/Element'
 import './Canvas.scss'
@@ -85,9 +85,15 @@ export default class TargetBox extends Component {
     componentDidMount = () => {
 
         document.onkeydown= (e) => {
+            console.log(e.keyCode)
             if(e.keyCode === 91 || e.keyCode === 17) {
                 this.props.dispatch(setHold(true))
+            } else if (e.keyCode === 67) {
+                this.props.dispatch(copy(1))
+            } else if (e.keyCode === 86) {
+                this.props.dispatch(paste(1))
             }
+
         }
 
         document.onkeyup= (e) => {

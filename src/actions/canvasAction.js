@@ -10,7 +10,8 @@ import {
     REMOVE_ELEMENT,
     SET_HOLD,
     CLEAR_SELECTIONS,
-    COPY_SELECTION
+    COPY_SELECTION,
+    PASTE
 } from '../commons/constants'
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -110,13 +111,17 @@ export function clearAllSelections() {
     }
 }
 
-export function copy() {
+export function copy(screenId) {
     return function (dispatch) {
-        dispatch({type: COPY_SELECTION})
+        dispatch({type: COPY_SELECTION, screenId: screenId})
     }
 }
 
-
+export function paste(screenId) {
+    return function (dispatch) {
+        dispatch({type: PASTE, screenId: screenId})
+    }
+}
 
 
 

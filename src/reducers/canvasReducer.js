@@ -9,10 +9,12 @@ import {
     REMOVE_ELEMENT,
     SET_HOLD,
     CLEAR_SELECTIONS,
-    COPY_SELECTION
+    COPY_SELECTION,
+    PASTE
 } from '../commons/constants'
 import _ from 'lodash'
 
+import uuidv4 from 'uuid/v4'
 
 const addElement = (state, action) => {
     const screenListCopy = _.cloneDeep(state.screenList)
@@ -101,6 +103,45 @@ const removeElement = (state, action) => {
     }
 }
 
+const copyToClipboard = (state, action) => {
+    let clipBoard = _.filter(state.screenList[action.screenId], (element) => {
+        return _.find(state.selectedElements, (id) => {return id === element.id})
+    })
+
+    console.log(clipBoard)
+    return {
+        ...state,
+        clipboardElements: clipBoard
+    }
+
+}
+
+
+const paste = (state, action) => {
+
+    let screenListCopy = Object.assign({}, state.screenList)
+
+    let newElements = _.map(state.clipboardElements, (element) => {
+        return {
+            id:uuidv4(),
+            height: element.height,
+            label: element.label,
+            left: element.left + 20,
+            top: element.top + 20,
+            type: element.type,
+            width: element.width + 20
+        }
+    })
+
+    screenListCopy[action.screenId] = _.concat(screenListCopy[action.screenId], newElements)
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+
+}
+
 export default function reducer(state = {
     screenList: {1: []},
     resizeElementId: null,
@@ -140,7 +181,10 @@ export default function reducer(state = {
                 return {...state, selectedElements: []}
             break;
         case COPY_SELECTION:
-            return {...state}
+            return copyToClipboard(state, action)
+            break;
+        case PASTE:
+            return paste(state, action)
             break;
         default:
             break;
