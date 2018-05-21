@@ -8,10 +8,13 @@ import DragItem from './components/DragItem/DragItem'
 import Canvas from './components/Canvas/Canvas'
 import ConfigPanel from './components/ConfigPanel/ConfigPanel'
 
-import HTML5Backend from 'react-dnd-html5-backend'
-import PageList from "./components/PageList/PageList";
+//import HTML5Backend from 'react-dnd-html5-backend'
 
-@DragDropContext(HTML5Backend)
+import MultiBackend from 'react-dnd-multi-backend';
+import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch'
+
+
+@DragDropContext(MultiBackend(HTML5toTouch))
 export default class App extends Component {
     render() {
         return (

@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="292e16ab-55e6-4af7-8e3c-58252f194fc3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/commons/Screens/Browser.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/PageList/PageList.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/PageList/PageList.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/canvasAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/canvasAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commons/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/commons/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Canvas/Canvas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Canvas/Canvas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Canvas/Canvas.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Canvas/Canvas.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ConfigPanel/ConfigPanel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ConfigPanel/ConfigPanel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reducers/canvasReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/canvasReducer.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -40,13 +31,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ConfigPanel.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ConfigPanel.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/ConfigPanel/ConfigPanel.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="62" column="108" selection-start-line="62" selection-start-column="108" selection-end-line="62" selection-end-column="108" />
+            <state relative-caret-position="15">
+              <caret line="1" column="73" lean-forward="true" selection-start-line="1" selection-start-column="73" selection-end-line="1" selection-end-column="73" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/App.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="228">
+              <caret line="17" column="44" lean-forward="true" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
               <folding>
-                <element signature="e#0#40#0" expanded="true" />
+                <element signature="e#0#38#0" expanded="true" />
+                <element signature="e#373#424#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -164,12 +165,12 @@
         <option value="$PROJECT_DIR$/src/components/PageList/PageList.scss" />
         <option value="$PROJECT_DIR$/src/components/Canvas/Canvas.scss" />
         <option value="$PROJECT_DIR$/src/components/PageList/PageList.js" />
-        <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/components/Canvas/Canvas.js" />
         <option value="$PROJECT_DIR$/src/commons/constants.js" />
         <option value="$PROJECT_DIR$/src/actions/canvasAction.js" />
         <option value="$PROJECT_DIR$/src/reducers/canvasReducer.js" />
         <option value="$PROJECT_DIR$/src/components/ConfigPanel/ConfigPanel.js" />
+        <option value="$PROJECT_DIR$/src/App.js" />
       </list>
     </option>
   </component>
@@ -346,12 +347,12 @@
       <workItem from="1526502732249" duration="3732000" />
       <workItem from="1526715001672" duration="2074000" />
       <workItem from="1526886234539" duration="8733000" />
-      <workItem from="1526902524816" duration="1953000" />
+      <workItem from="1526902524816" duration="2393000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="82570000" />
+    <option name="totallyTimeSpent" value="83010000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="23" width="1920" height="989" extended-state="0" />
@@ -467,6 +468,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -484,9 +488,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret selection-end-line="7" selection-end-column="52" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -730,15 +731,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -816,10 +810,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/ConfigPanel/ConfigPanel.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="62" column="108" selection-start-line="62" selection-start-column="108" selection-end-line="62" selection-end-column="108" />
+        <state relative-caret-position="15">
+          <caret line="1" column="73" lean-forward="true" selection-start-line="1" selection-start-column="73" selection-end-line="1" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="17" column="44" lean-forward="true" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
           <folding>
-            <element signature="e#0#40#0" expanded="true" />
+            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#373#424#0" expanded="true" />
           </folding>
         </state>
       </provider>
