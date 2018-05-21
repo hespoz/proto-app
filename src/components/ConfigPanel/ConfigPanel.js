@@ -1,10 +1,19 @@
 import React, { Component } from 'react'
-import { Accordion, Icon, Form } from 'semantic-ui-react'
+import { Accordion, Icon, Form, Button, Select } from 'semantic-ui-react'
 import {EventType} from '../../commons/EventType'
 import Events from './Events'
 
-import './ConfigPanel.scss'
+import { addNewPage, selectScreen } from '../../actions/canvasAction'
 
+import './ConfigPanel.scss'
+import {connect} from "react-redux";
+
+@connect((store) => {
+    return {
+        screenList: store.canvas.screenList,
+        selectedPageId: store.canvas.selectedPageId
+    }
+})
 export default class ConfigPanel extends Component {
 
     state = {
@@ -28,13 +37,35 @@ export default class ConfigPanel extends Component {
         this.setState({ activeIndexScreen: newIndex })
     }
 
+    getPageList = () => {
+        return this.props.screenList.map((screen) => {
+            return {
+                key:screen.id,
+                value:screen.id,
+                text:screen.name
+            }
+        })
+    }
 
     render() {
 
-        const { activeIndex, activeIndexScreen } = this.state
+        const { activeIndex } = this.state
+
+        console.log('selectedPageId', this.props.selectedPageId)
 
         return (
             <div className='config-container'>
+
+                <Button onClick={(e) => {
+                    this.props.dispatch(addNewPage())
+                }}>New page</Button>
+
+                <Select placeholder='Select screen' options={this.getPageList()} onChange={(e, {value}) => {
+                    this.props.dispatch(selectScreen(value))
+                }}
+                          value={this.props.selectedPageId}
+                />
+
                 <Accordion>
                     <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick} >
                         <Icon name='dropdown' />

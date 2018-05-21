@@ -9,6 +9,7 @@ import Canvas from './components/Canvas/Canvas'
 import ConfigPanel from './components/ConfigPanel/ConfigPanel'
 
 import HTML5Backend from 'react-dnd-html5-backend'
+import PageList from "./components/PageList/PageList";
 
 @DragDropContext(HTML5Backend)
 export default class App extends Component {
@@ -16,10 +17,7 @@ export default class App extends Component {
         return (
             <div className="container-fluid">
                 <h3 className="title">Form creator</h3>
-                <ul>
-                    <li>Click on element and use the square at the bottom corner to resize.</li>
-                    <li>Double click into the text of the dropped element to edit text.</li>
-                </ul>
+
                 <div className=" main-container">
                     <div className="left-panel">
                         <div className="palet-container">

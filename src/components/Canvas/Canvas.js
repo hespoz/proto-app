@@ -3,10 +3,21 @@ import {DropTarget} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
-import {addElementToScreen, updateElementPosition, setHold, clearAllSelections, copy, paste} from '../../actions/canvasAction'
-import ContentElement from '../../commons/ContentElement/ContentElement'
-import Element from '../Element/Element'
+import {
+    addElementToScreen,
+    updateElementPosition,
+    setHold,
+    clearAllSelections,
+    copy,
+    paste
+} from '../../actions/canvasAction'
+
+import {Tab} from 'semantic-ui-react'
+
 import './Canvas.scss'
+
+import Browser from '../../commons/Screens/Browser'
+import _ from "lodash";
 
 
 const elementTarget = {
@@ -38,40 +49,10 @@ const elementTarget = {
     }
 }
 
-const browser = (screen) => {
-    return (
-        <div id="canvasDrawer" className='browser'>
-            <div className='nav-bar'>
-                <div className='icon red'></div>
-                <div className='icon yellow'></div>
-                <div className='icon green'></div>
-                <div className='url'></div>
-            </div>
-            <div>
-                {screen.map((item) => {
-                    return (
-                        <Element
-                            key={item.id}
-                            id={item.id}
-                            left={item.left}
-                            top={item.top}
-                            height={item.height}
-                            width={item.width}
-                            hideSourceOnDrag
-                        >
-                            <ContentElement id={item.id} type={item.type} label={item.label} dropedElement/>
-                        </Element>
-                    )
-
-                })}
-            </div>
-        </div>
-    )
-}
-
 @connect((store) => {
     return {
-        screenList: store.canvas.screenList
+        screenList: store.canvas.screenList,
+        selectedPageId: store.canvas.selectedPageId
     }
 })
 @DropTarget(ItemTypes.ELEMENT, elementTarget, (connect, monitor) => ({
@@ -82,11 +63,13 @@ const browser = (screen) => {
 }))
 export default class TargetBox extends Component {
 
+    state = {activeIndex: 1}
+
     componentDidMount = () => {
 
-        document.onkeydown= (e) => {
+        document.onkeydown = (e) => {
             console.log(e.keyCode)
-            if(e.keyCode === 91 || e.keyCode === 17) {
+            if (e.keyCode === 91 || e.keyCode === 17) {
                 this.props.dispatch(setHold(true))
             } else if (e.keyCode === 67) {
                 this.props.dispatch(copy(1))
@@ -96,26 +79,35 @@ export default class TargetBox extends Component {
 
         }
 
-        document.onkeyup= (e) => {
+        document.onkeyup = (e) => {
             this.props.dispatch(setHold(false))
         }
 
     }
 
     clearSelection = (e) => {
-        if(e.target.id === 'canvasDrawer') {
+        if (e.target.id === 'canvasDrawer') {
             this.props.dispatch(clearAllSelections())
         }
+    }
+
+    getSelectedScreen = () => {
+        let screenListCopy = _.cloneDeep(this.props.screenList)
+
+        const index = _.findIndex(screenListCopy, (s) => {
+            return s.id === this.props.selectedPageId
+        })
+
+        return screenListCopy[index]
     }
 
     render() {
         const {connectDropTarget} = this.props
 
-        const {screenList} = this.props
 
         return connectDropTarget(
             <div onClick={this.clearSelection}>
-                {browser(screenList[1])}
+                <Browser screen={this.getSelectedScreen()}/>
             </div>,
         )
     }

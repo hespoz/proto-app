@@ -11,7 +11,9 @@ import {
     SET_HOLD,
     CLEAR_SELECTIONS,
     COPY_SELECTION,
-    PASTE
+    PASTE,
+    ADD_NEW_PAGE,
+    SELECT_SCREEN
 } from '../commons/constants'
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -123,5 +125,18 @@ export function paste(screenId) {
     }
 }
 
+export function addNewPage() {
+    return function (dispatch) {
+        dispatch({type: ADD_NEW_PAGE})
+    }
+}
+
+export function selectScreen(screenId) {
+    return function (dispatch) {
+        dispatch({
+            type: SELECT_SCREEN, screenId: screenId
+        })
+    }
+}
 
 

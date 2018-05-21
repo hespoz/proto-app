@@ -10,24 +10,61 @@ import {
     SET_HOLD,
     CLEAR_SELECTIONS,
     COPY_SELECTION,
-    PASTE
+    PASTE,
+    ADD_NEW_PAGE,
+    SELECT_SCREEN
 } from '../commons/constants'
 import _ from 'lodash'
 
 import uuidv4 from 'uuid/v4'
 
+const getIndexByScreenId = (screenList, selectedPageId) => {
+    return _.findIndex(screenList, (s) => {
+        return s.id === selectedPageId
+    })
+}
+
 const addElement = (state, action) => {
     const screenListCopy = _.cloneDeep(state.screenList)
 
-    screenListCopy[action.screenId].push(action.element)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    screen.elements.push(action.element)
+
+    screenListCopy[index] = screen
 
     return {...state, screenList: screenListCopy, selectedElements: [action.element.id]}
 }
 
+const removeElement = (state, action) => {
+    const screenListCopy = _.cloneDeep(state.screenList)
+
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    _.remove(screen.elements, (e) => {
+        return e.id === action.id
+    })
+
+    screenListCopy[index] = screen
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
+
 const updateElementPosition = (state, action) => {
     let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
-    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+    let screen = state.screenList[index]
+
+
+    screenListCopy[index].elements = screen.elements.map((element) => {
         if (element.id === action.element.id) {
             element.top = action.element.top
             element.left = action.element.left
@@ -43,8 +80,12 @@ const updateElementPosition = (state, action) => {
 
 const resizeElement = (state, action) => {
     let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
-    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+    let screen = state.screenList[index]
+
+
+    screenListCopy[index].elements = screen.elements.map((element) => {
         if (element.id === action.element.id) {
             element.height = action.element.height
             element.width = action.element.width
@@ -60,8 +101,12 @@ const resizeElement = (state, action) => {
 
 const updateLabel = (state, action) => {
     let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
-    screenListCopy[action.screenId] = screenListCopy[action.screenId].map((element) => {
+    let screen = state.screenList[index]
+
+
+    screenListCopy[index].elements = screen.elements.map((element) => {
         if (element.id === action.element.id) {
             element.label = action.element.label
         }
@@ -87,28 +132,17 @@ const selectElement = (state, action) => {
     return {...state, selectedElements: selectedElements}
 }
 
-const removeElement = (state, action) => {
-    let screenListCopy = Object.assign({}, state.screenList)
 
-    console.log(_.remove(screenListCopy[action.screenId], (e) => {
-       return e.id === action.id
-    }))
-    screenListCopy[action.screenId] = _.pull(screenListCopy[action.screenId], {id: action.id});
-
-
-
-    return {
-        ...state,
-        screenList: screenListCopy
-    }
-}
 
 const copyToClipboard = (state, action) => {
-    let clipBoard = _.filter(state.screenList[action.screenId], (element) => {
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    let clipBoard = _.filter(screen.elements, (element) => {
         return _.find(state.selectedElements, (id) => {return id === element.id})
     })
 
-    console.log(clipBoard)
     return {
         ...state,
         clipboardElements: clipBoard
@@ -119,7 +153,11 @@ const copyToClipboard = (state, action) => {
 
 const paste = (state, action) => {
 
-    let screenListCopy = Object.assign({}, state.screenList)
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
 
     let newElements = _.map(state.clipboardElements, (element) => {
         return {
@@ -133,7 +171,9 @@ const paste = (state, action) => {
         }
     })
 
-    screenListCopy[action.screenId] = _.concat(screenListCopy[action.screenId], newElements)
+    screen.elements = _.concat(screen.elements, newElements)
+
+    screenListCopy[index] = screen
 
     return {
         ...state,
@@ -142,8 +182,32 @@ const paste = (state, action) => {
 
 }
 
+const addNewPage = (state) => {
+
+    let screenListCopy = _.cloneDeep(state.screenList)
+
+    screenListCopy.push({
+        id:uuidv4(),
+        name:`Screen ${screenListCopy.length}`,
+        elements:[]
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy
+    }
+}
+
+
+const defaultScreenId = uuidv4()
+
 export default function reducer(state = {
-    screenList: {1: []},
+    screenList: [{
+        id:defaultScreenId,
+        name: 'Screen',
+        elements:[]
+    }],
+    selectedPageId: defaultScreenId,
     resizeElementId: null,
     selectedElements:[],
     onHold:false,
@@ -185,6 +249,15 @@ export default function reducer(state = {
             break;
         case PASTE:
             return paste(state, action)
+            break;
+        case ADD_NEW_PAGE:
+            return addNewPage(state)
+            break;
+        case SELECT_SCREEN:
+            return {
+                ...state,
+                selectedPageId: action.screenId
+            }
             break;
         default:
             break;
