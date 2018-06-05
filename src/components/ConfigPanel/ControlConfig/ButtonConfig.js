@@ -56,6 +56,10 @@ export default class ButtonConfig extends Component {
         })
     }
 
+    addCloseNewState = ()  => {
+        this.setState({showAddNewState: false})
+    }
+
     addNewState = ()  => {
         this.setState({showAddNewState: true})
     }
@@ -71,7 +75,7 @@ export default class ButtonConfig extends Component {
                             <Header as='h3'>New State</Header>
                         </div>
                         <div>
-                            <Icon name='close' size='large'/>
+                            <Icon name='close' size='large' onClick={this.addCloseNewState}/>
                         </div>
                     </div>
 
