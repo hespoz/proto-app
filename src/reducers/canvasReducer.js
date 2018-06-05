@@ -12,7 +12,11 @@ import {
     COPY_SELECTION,
     PASTE,
     ADD_NEW_PAGE,
-    SELECT_SCREEN
+    SELECT_SCREEN,
+    UPDATE_ELEMENT_PROP,
+    FETCH_FIELDS_SCREEN,
+    TEXT_FIELD,
+    TEXT_AREA
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -35,7 +39,12 @@ const addElement = (state, action) => {
 
     screenListCopy[index] = screen
 
-    return {...state, screenList: screenListCopy, selectedElements: [action.element.id]}
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElements: [action.element.id],
+        selectedElementInfo: action.element
+    }
 }
 
 const removeElement = (state, action) => {
@@ -53,7 +62,8 @@ const removeElement = (state, action) => {
 
     return {
         ...state,
-        screenList: screenListCopy
+        screenList: screenListCopy,
+        selectedElementInfo:null
     }
 }
 
@@ -129,10 +139,27 @@ const selectElement = (state, action) => {
 
     selectedElements.push(action.element.id)
 
-    return {...state, selectedElements: selectedElements}
+    let selectedElementInfo = null
+    if(selectedElements.length === 1) {
+        const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+        let screen = state.screenList[index]
+        selectedElementInfo = getSelectedElementInfo(screen, selectedElements[0])
+    } else {
+        selectedElementInfo = null
+    }
+
+    return {
+        ...state,
+        selectedElements: selectedElements,
+        selectedElementInfo:selectedElementInfo
+    }
 }
 
-
+const getSelectedElementInfo = (screen, elementIndex) => {
+        return _.find(screen.elements, (element) => {
+            return element.id === elementIndex
+        })
+}
 
 const copyToClipboard = (state, action) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -198,6 +225,55 @@ const addNewPage = (state) => {
     }
 }
 
+const updateElementProp = (state, action) => {
+
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+
+    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
+    screenListCopy[index].elements = screen.elements.map((element) => {
+        if (element.id === selectedElementInfoCopy.id) {
+            element.props[action.propName].value = action.value
+            selectedElementInfoCopy = element
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElementInfo: selectedElementInfoCopy
+    }
+
+}
+
+
+const fetchFieldsInScreen = (state) => {
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+    let fieldOptions = []
+    _.forEach(screen.elements, (element) => {
+        if(element.type === TEXT_FIELD || element.type === TEXT_AREA) {
+            fieldOptions.push({
+                key:element.props.name.value,
+                value:element.props.name.value,
+                text:element.props.name.value
+            })
+        }
+
+    })
+
+    return {
+        ...state,
+        fieldsCurrentScreen: fieldOptions
+    }
+
+}
 
 const defaultScreenId = uuidv4()
 
@@ -211,7 +287,9 @@ export default function reducer(state = {
     resizeElementId: null,
     selectedElements:[],
     onHold:false,
-    clipboardElements:[]
+    clipboardElements:[],
+    selectedElementInfo:null,
+    fieldsCurrentScreen:[]
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
@@ -258,6 +336,12 @@ export default function reducer(state = {
                 ...state,
                 selectedPageId: action.screenId
             }
+            break;
+        case UPDATE_ELEMENT_PROP:
+            return updateElementProp(state, action)
+            break;
+        case FETCH_FIELDS_SCREEN:
+            return fetchFieldsInScreen(state)
             break;
         default:
             break;
