@@ -1,6 +1,7 @@
 import {
     ADD_ELEMENT_TO_SCREEN,
     UPDATE_ELEMENT_POSITION,
+    UPDATE_ELEMENT_POSITION_V2,
     SET_RESIZE_STATE,
     CLEAR_RESIZE_STATE,
     RESIZE_ELEMENT,
@@ -22,6 +23,23 @@ import _ from 'lodash'
 
 import uuidv4 from 'uuid/v4'
 
+import generateProperties from './generateProperties'
+
+const countFieldElements = (state) => {
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    let fieldElementsCount = 1
+    _.forEach(screen.elements, (element) => {
+        if(element.type === TEXT_FIELD || element.type === TEXT_AREA) {
+            fieldElementsCount++
+        }
+    })
+
+    return fieldElementsCount
+}
+
 const getIndexByScreenId = (screenList, selectedPageId) => {
     return _.findIndex(screenList, (s) => {
         return s.id === selectedPageId
@@ -34,6 +52,8 @@ const addElement = (state, action) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
     let screen = state.screenList[index]
+
+    action.element.props = generateProperties(action.element.type, countFieldElements(state))
 
     screen.elements.push(action.element)
 
@@ -85,6 +105,44 @@ const updateElementPosition = (state, action) => {
     return {
         ...state,
         screenList: screenListCopy
+    }
+}
+
+
+const updateElementPositionV2 = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    let selectedElementsCopy = _.cloneDeep(state.selectedElements)
+
+    //if id element is not in the selected. then remove all the previous selections and only move the drag element
+    if (_.find(selectedElementsCopy, (id) => {return id === action.element.id}) === undefined) {
+        selectedElementsCopy = []
+
+        screenListCopy[index].elements = screen.elements.map((element) => {
+            if (element.id === action.element.id) {
+                element.top = Math.round(element.top + action.element.deltaY)
+                element.left = Math.round(element.left + action.element.deltaX)
+            }
+            return element
+        })
+
+    } else {
+        screenListCopy[index].elements = screen.elements.map((element) => {
+            if (_.find(selectedElementsCopy, (id) => {return id === element.id}) !== undefined) {
+                element.top = Math.round(element.top + action.element.deltaY)
+                element.left = Math.round(element.left + action.element.deltaX)
+            }
+            return element
+        })
+    }
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElements:selectedElementsCopy
     }
 }
 
@@ -194,7 +252,8 @@ const paste = (state, action) => {
             left: element.left + 20,
             top: element.top + 20,
             type: element.type,
-            width: element.width + 20
+            width: element.width + 20,
+            props: element.props
         }
     })
 
@@ -297,6 +356,9 @@ export default function reducer(state = {
             break;
         case UPDATE_ELEMENT_POSITION:
             return updateElementPosition(state, action)
+            break;
+        case UPDATE_ELEMENT_POSITION_V2:
+            return updateElementPositionV2(state, action)
             break;
         case RESIZE_ELEMENT:
             return resizeElement(state, action)

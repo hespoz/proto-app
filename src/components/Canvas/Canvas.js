@@ -6,13 +6,12 @@ import {findDOMNode} from 'react-dom'
 import {
     addElementToScreen,
     updateElementPosition,
+    updateElementPositionV2,
     setHold,
     clearAllSelections,
     copy,
     paste
 } from '../../actions/canvasAction'
-
-import {Tab} from 'semantic-ui-react'
 
 import './Canvas.scss'
 
@@ -28,9 +27,12 @@ const elementTarget = {
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
-            const left = Math.round(item.left + delta.x)
+            /*const left = Math.round(item.left + delta.x)
             const top = Math.round(item.top + delta.y)
-            props.dispatch(updateElementPosition(1, item.id, top, left))
+            props.dispatch(updateElementPosition(1, item.id, top, left))*/
+
+
+            props.dispatch(updateElementPositionV2(item.id, delta.x,delta.y))
 
         } else {
 

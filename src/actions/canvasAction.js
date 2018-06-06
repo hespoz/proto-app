@@ -4,6 +4,7 @@ import {
     SET_RESIZE_STATE,
     CLEAR_RESIZE_STATE,
     UPDATE_ELEMENT_POSITION,
+    UPDATE_ELEMENT_POSITION_V2,
     RESIZE_ELEMENT,
     UPDATE_LABEL,
     SELECT_ELEMENT,
@@ -14,96 +15,10 @@ import {
     PASTE,
     ADD_NEW_PAGE,
     SELECT_SCREEN,
-    TEXT_FIELD,
-    TEXT_AREA,
-    BUTTON,
     UPDATE_ELEMENT_PROP,
     FETCH_FIELDS_SCREEN
 } from '../commons/constants'
 
-
-const propsByType = (type) => {
-    switch(type) {
-        case TEXT_FIELD: case TEXT_AREA:
-                return {
-                    name : {
-                        label:"Name",
-                        value: type === TEXT_FIELD ? 'TextField' : 'TextArea'
-                    },
-                    fieldType : {
-                        label:"Field type",
-                        value:"SELECT_OPTION",
-                        options:[
-                            {
-                                key: "SELECT_OPTION",
-                                value: "SELECT_OPTION",
-                                text: "Select option"
-                            },
-                            {
-                                key: "NOT_EMPTY",
-                                value: "NOT_EMPTY",
-                                text: "Not empty"
-                            },
-                            {
-                                key: "EMAIL",
-                                value: "EMAIL",
-                                text: "Email"
-                            },
-                            {
-                                key: "PASSWORD",
-                                value: "PASSWORD",
-                                text: "Password"
-                            },
-                            {
-                                key: "NUMERIC",
-                                value: "NUMERIC",
-                                text: "Numeric"
-                            },
-                            {
-                                key: "DATE",
-                                value: "DATE",
-                                text: "Date"
-                            },
-                            {
-                                key: "DATETIME",
-                                value: "DATETIME",
-                                text: "Date time"
-                            },
-                            {
-                                key: "TIME",
-                                value: "TIME",
-                                text: "Time"
-                            }
-                        ]
-                    }
-                }
-
-            break;
-        case BUTTON:
-            return {
-                actionName:{
-                    label:"Action name",
-                    value:"",
-                },
-                actionDescription:{
-                    label:"Action description",
-                    value:"",
-                },
-                actionParameters:{
-                    label:"Action parameters",
-                    value:[],
-                },
-                goToState:{
-                    label:"Go to state",
-                    value:-1,
-                }
-            }
-            break;
-        default:
-                return []
-            break;
-    }
-}
 
 export function addElementToScreen(screenId, type, top, left) {
     return function (dispatch) {
@@ -115,8 +30,7 @@ export function addElementToScreen(screenId, type, top, left) {
                 top: top,
                 left: left,
                 height: 45,
-                width: 200,
-                props:propsByType(type)
+                width: 200
             }
         })
     }
@@ -129,6 +43,18 @@ export function updateElementPosition(screenId, id, top, left) {
                 id: id,
                 top: top,
                 left: left
+            }
+        })
+    }
+}
+
+export function updateElementPositionV2(id, deltaX, deltaY) {
+    return function (dispatch) {
+        dispatch({
+            type: UPDATE_ELEMENT_POSITION_V2, element: {
+                id:id,
+                deltaX: deltaX,
+                deltaY: deltaY
             }
         })
     }
