@@ -16,7 +16,8 @@ import {
     ADD_NEW_PAGE,
     SELECT_SCREEN,
     UPDATE_ELEMENT_PROP,
-    FETCH_FIELDS_SCREEN
+    FETCH_FIELDS_SCREEN,
+    SHOW_ADD_NEW_FORM
 } from '../commons/constants'
 
 
@@ -141,9 +142,9 @@ export function paste(screenId) {
     }
 }
 
-export function addNewPage() {
+export function addNewPage(screenName, copyState) {
     return function (dispatch) {
-        dispatch({type: ADD_NEW_PAGE})
+        dispatch({type: ADD_NEW_PAGE, screenName: screenName, copyState: copyState})
     }
 }
 
@@ -170,6 +171,16 @@ export function fetchFieldsInScreen() {
         })
     }
 }
+
+export function showAddNewForm() {
+    return function (dispatch) {
+        dispatch({
+            type: SHOW_ADD_NEW_FORM
+        })
+    }
+}
+
+
 
 
 
