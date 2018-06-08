@@ -4,7 +4,9 @@ import {
     BUTTON,
 } from '../commons/constants'
 
-const generateProperties = (type, index) => {
+import uuidv4 from 'uuid/v4'
+
+export function generateHelper(type, index) {
     switch(type) {
         case TEXT_FIELD: case TEXT_AREA:
         return {
@@ -63,22 +65,27 @@ const generateProperties = (type, index) => {
         break;
         case BUTTON:
             return {
-                actionName:{
-                    label:"Action name",
-                    value:"",
-                },
-                actionDescription:{
-                    label:"Action description",
-                    value:"",
-                },
-                actionParameters:{
-                    label:"Action parameters",
-                    value:[],
-                },
-                goToState:{
-                    label:"Go to state",
-                    value:-1,
-                }
+
+                actions:[{
+                    id:uuidv4(),
+                    actionName:{
+                        label:"Action name",
+                        value:"",
+                    },
+                    actionDescription:{
+                        label:"Action description",
+                        value:"",
+                    },
+                    actionParameters:{
+                        label:"Action parameters",
+                        value:[],
+                    },
+                    goToState:{
+                        label:"Go to state",
+                        value:-1,
+                    }
+                }]
+
             }
             break;
         default:
@@ -87,4 +94,24 @@ const generateProperties = (type, index) => {
     }
 }
 
-export default generateProperties
+export function generateAction() {
+  return {
+      id:uuidv4(),
+      actionName:{
+          label:"Action name",
+          value:"",
+      },
+      actionDescription:{
+          label:"Action description",
+          value:"",
+      },
+      actionParameters:{
+          label:"Action parameters",
+          value:[],
+      },
+      goToState:{
+          label:"Go to state",
+          value:-1,
+      }
+  }
+}

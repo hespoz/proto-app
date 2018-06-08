@@ -19,13 +19,14 @@ import {
     TEXT_FIELD,
     TEXT_AREA,
     SHOW_ADD_NEW_FORM,
-    HIDE_ADD_NEW_FORM
+    UPDATE_ACTION_ELEMENT_PROP,
+    ADD_NEW_ACTION
 } from '../commons/constants'
 import _ from 'lodash'
 
 import uuidv4 from 'uuid/v4'
 
-import generateProperties from './generateProperties'
+import { generateHelper, generateAction } from './generateHelper'
 
 const countFieldElements = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -55,7 +56,7 @@ const addElement = (state, action) => {
 
     let screen = state.screenList[index]
 
-    action.element.props = generateProperties(action.element.type, countFieldElements(state))
+    action.element.props = generateHelper(action.element.type, countFieldElements(state))
 
     screen.elements.push(action.element)
 
@@ -283,11 +284,13 @@ const addNewPage = (state, action) => {
     let newElements = []
 
     if (action.copyState) {
-        newElements = screen.elements.map((element) => {
+        newElements = screen.elements.map((elm) => {
 
-            element.props = generateProperties(element.type, countFieldElements(state))
+            let elmCopy = _.cloneDeep(elm)
 
-            return element
+            elmCopy.props = generateHelper(elmCopy.type, countFieldElements(state))
+
+            return elmCopy
         })
     }
 
@@ -301,8 +304,15 @@ const addNewPage = (state, action) => {
     let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
     screenListCopy[index].elements = screen.elements.map((element) => {
         if (element.id === selectedElementInfoCopy.id) {
-            element.props["goToState"].value = screenId
+            element.props.actions = element.props.actions.map((actionElem) => {
+                if(actionElem.id === action.actionId) {
+                    actionElem["goToState"].value = screenId
+                }
+                return actionElem
+            })
+
             selectedElementInfoCopy = element
+
         }
         return element
     })
@@ -340,6 +350,37 @@ const updateElementProp = (state, action) => {
 
 }
 
+
+const updateActionElementProp = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+
+    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
+    screenListCopy[index].elements = screen.elements.map((element) => {
+        if (element.id === selectedElementInfoCopy.id) {
+            element.props.actions = element.props.actions.map((actionElem) => {
+                if(actionElem.id === action.actionId) {
+                    actionElem[action.propName].value = action.value
+                }
+                return actionElem
+            })
+
+            selectedElementInfoCopy = element
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElementInfo: selectedElementInfoCopy
+    }
+}
+
+
 const fetchFieldsInScreen = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
@@ -364,6 +405,31 @@ const fetchFieldsInScreen = (state) => {
 
 }
 
+const addNewAction = (state) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
+
+    screenListCopy[index].elements = screen.elements.map((element) => {
+        if (element.id === selectedElementInfoCopy.id) {
+            element.props.actions.push(generateAction())
+            selectedElementInfoCopy = element
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElementInfo: selectedElementInfoCopy
+    }
+
+}
+
+
 const defaultScreenId = uuidv4()
 
 export default function reducer(state = {
@@ -379,7 +445,8 @@ export default function reducer(state = {
     clipboardElements:[],
     selectedElementInfo:null,
     fieldsCurrentScreen:[],
-    showNewScreenForm: false
+    showNewScreenForm: false,
+    toActionId:null
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
@@ -434,14 +501,21 @@ export default function reducer(state = {
         case UPDATE_ELEMENT_PROP:
             return updateElementProp(state, action)
             break;
+        case UPDATE_ACTION_ELEMENT_PROP:
+            return updateActionElementProp(state, action)
+            break;
         case FETCH_FIELDS_SCREEN:
             return fetchFieldsInScreen(state)
             break;
         case SHOW_ADD_NEW_FORM:
             return {
                 ...state,
-                showNewScreenForm:true
+                showNewScreenForm:true,
+                toActionId:action.actionId
             }
+        case ADD_NEW_ACTION:
+            return addNewAction(state)
+            break;
         default:
             break;
     }
