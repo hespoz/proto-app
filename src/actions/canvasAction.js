@@ -18,7 +18,8 @@ import {
     UPDATE_ELEMENT_PROP,
     FETCH_FIELDS_SCREEN,
     SHOW_ADD_NEW_FORM,
-    UPDATE_ACTION_ELEMENT_PROP
+    UPDATE_ACTION_ELEMENT_PROP,
+    ADD_NEW_ACTION
 } from '../commons/constants'
 
 
@@ -188,6 +189,14 @@ export function updateActionElementProp(actionId, propName, value) {
     return function (dispatch) {
         dispatch({
             type: UPDATE_ACTION_ELEMENT_PROP, actionId:actionId, propName:propName, value:value
+        })
+    }
+}
+
+export function addNewAction() {
+    return function (dispatch) {
+        dispatch({
+            type: ADD_NEW_ACTION
         })
     }
 }

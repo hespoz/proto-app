@@ -7,7 +7,7 @@ import {
     BUTTON
 } from '../../commons/constants'
 
-import {addNewPage, selectScreen} from '../../actions/canvasAction'
+import {addNewPage, selectScreen, addNewAction} from '../../actions/canvasAction'
 
 import './ConfigPanel.scss'
 import {connect} from "react-redux";
@@ -80,7 +80,7 @@ export default class ConfigPanel extends Component {
         return (
             <div className='config-container'>
 
-                <Button onClick={(e) => {
+                <Button flat onClick={(e) => {
                     this.props.dispatch(addNewPage())
                 }}>New page</Button>
 
@@ -126,6 +126,10 @@ export default class ConfigPanel extends Component {
                                 Control
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 1}>
+                                <Button flat onClick={(e) => {
+                                    this.props.dispatch(addNewAction())
+                                }}>New Action</Button>
+
                                 {this.renderControlProperties()}
                             </Accordion.Content>
                         </Accordion>
