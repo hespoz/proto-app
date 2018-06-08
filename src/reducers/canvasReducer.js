@@ -17,7 +17,9 @@ import {
     UPDATE_ELEMENT_PROP,
     FETCH_FIELDS_SCREEN,
     TEXT_FIELD,
-    TEXT_AREA
+    TEXT_AREA,
+    SHOW_ADD_NEW_FORM,
+    HIDE_ADD_NEW_FORM
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -268,19 +270,48 @@ const paste = (state, action) => {
 
 }
 
-const addNewPage = (state) => {
+const addNewPage = (state, action) => {
 
     let screenListCopy = _.cloneDeep(state.screenList)
 
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+    const screenId = uuidv4()
+
+    let newElements = []
+
+    if (action.copyState) {
+        newElements = screen.elements.map((element) => {
+
+            element.props = generateProperties(element.type, countFieldElements(state))
+
+            return element
+        })
+    }
+
     screenListCopy.push({
-        id:uuidv4(),
-        name:`Screen ${screenListCopy.length}`,
-        elements:[]
+        id:screenId,
+        name:action.screenName,
+        elements:newElements
+    })
+
+
+    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
+    screenListCopy[index].elements = screen.elements.map((element) => {
+        if (element.id === selectedElementInfoCopy.id) {
+            element.props["goToState"].value = screenId
+            selectedElementInfoCopy = element
+        }
+        return element
     })
 
     return {
         ...state,
-        screenList: screenListCopy
+        screenList: screenListCopy,
+        showNewScreenForm:false,
+        selectedElementInfo: selectedElementInfoCopy
     }
 }
 
@@ -308,7 +339,6 @@ const updateElementProp = (state, action) => {
     }
 
 }
-
 
 const fetchFieldsInScreen = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -348,7 +378,8 @@ export default function reducer(state = {
     onHold:false,
     clipboardElements:[],
     selectedElementInfo:null,
-    fieldsCurrentScreen:[]
+    fieldsCurrentScreen:[],
+    showNewScreenForm: false
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
@@ -391,12 +422,13 @@ export default function reducer(state = {
             return paste(state, action)
             break;
         case ADD_NEW_PAGE:
-            return addNewPage(state)
+            return addNewPage(state, action)
             break;
         case SELECT_SCREEN:
             return {
                 ...state,
-                selectedPageId: action.screenId
+                selectedPageId: action.screenId,
+                selectedElementInfo:null
             }
             break;
         case UPDATE_ELEMENT_PROP:
@@ -405,6 +437,11 @@ export default function reducer(state = {
         case FETCH_FIELDS_SCREEN:
             return fetchFieldsInScreen(state)
             break;
+        case SHOW_ADD_NEW_FORM:
+            return {
+                ...state,
+                showNewScreenForm:true
+            }
         default:
             break;
     }

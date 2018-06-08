@@ -2,9 +2,10 @@ import React, {Component} from 'react'
 import {connect} from "react-redux"
 
 import { Form, Select, TextArea, Divider, Button, Icon, Header } from 'semantic-ui-react'
-import { updateElementProp, fetchFieldsInScreen } from "../../../actions/canvasAction";
+import { updateElementProp, fetchFieldsInScreen, showAddNewForm } from "../../../actions/canvasAction";
 
 import './ControlConfig.scss'
+import NewScreen from "./NewScreen";
 
 const options = [
     { key: 'angular', text: 'Angular', value: 'angular' },
@@ -33,14 +34,11 @@ const options = [
     return {
         screenList: store.canvas.screenList,
         selectedElementInfo:store.canvas.selectedElementInfo,
-        fieldsCurrentScreen:store.canvas.fieldsCurrentScreen
+        fieldsCurrentScreen:store.canvas.fieldsCurrentScreen,
+        showNewScreenForm: store.canvas.showNewScreenForm
     }
 })
 export default class ButtonConfig extends Component {
-
-    state = {
-        showAddNewState: false
-    }
 
     componentDidMount = () => {
         this.props.dispatch(fetchFieldsInScreen())
@@ -61,44 +59,14 @@ export default class ButtonConfig extends Component {
     }
 
     addNewState = ()  => {
-        this.setState({showAddNewState: true})
+        this.props.dispatch(showAddNewForm())
     }
 
     render() {
-        const { selectedElementInfo } = this.props
+        const { selectedElementInfo, showNewScreenForm } = this.props
 
-        if(this.state.showAddNewState){
-            return <div className='content-container'>
-                <header>
-                    <div className='header'>
-                        <div>
-                            <Header as='h3'>New State</Header>
-                        </div>
-                        <div>
-                            <Icon name='close' size='large' onClick={this.addCloseNewState}/>
-                        </div>
-                    </div>
-
-
-                </header>
-                <segment>
-                    <Form>
-                        <Form.Field>
-                            <label>Screen name</label>
-                            <input/>
-                        </Form.Field>
-                        <Form.Field>
-                            <Button fluid>
-                                New blank page
-                            </Button>
-                            <Divider horizontal>Or</Divider>
-                            <Button fluid>
-                                Clone current screen
-                            </Button>
-                        </Form.Field>
-                    </Form>
-                </segment>
-            </div>
+        if(showNewScreenForm){
+            return <NewScreen/>
         } else {
             return (
                 <div className='content-container'>
