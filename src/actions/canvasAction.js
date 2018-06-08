@@ -17,7 +17,8 @@ import {
     SELECT_SCREEN,
     UPDATE_ELEMENT_PROP,
     FETCH_FIELDS_SCREEN,
-    SHOW_ADD_NEW_FORM
+    SHOW_ADD_NEW_FORM,
+    UPDATE_ACTION_ELEMENT_PROP
 } from '../commons/constants'
 
 
@@ -142,9 +143,10 @@ export function paste(screenId) {
     }
 }
 
-export function addNewPage(screenName, copyState) {
+export function addNewPage(actionId, screenName, copyState) {
+    console.log(actionId, screenName, copyState)
     return function (dispatch) {
-        dispatch({type: ADD_NEW_PAGE, screenName: screenName, copyState: copyState})
+        dispatch({type: ADD_NEW_PAGE, screenName: screenName, copyState: copyState, actionId:actionId})
     }
 }
 
@@ -172,15 +174,23 @@ export function fetchFieldsInScreen() {
     }
 }
 
-export function showAddNewForm() {
+export function showAddNewForm(actionId) {
+    console.log("showAddNewForm", actionId)
     return function (dispatch) {
         dispatch({
-            type: SHOW_ADD_NEW_FORM
+            type: SHOW_ADD_NEW_FORM,
+            actionId: actionId
         })
     }
 }
 
-
+export function updateActionElementProp(actionId, propName, value) {
+    return function (dispatch) {
+        dispatch({
+            type: UPDATE_ACTION_ELEMENT_PROP, actionId:actionId, propName:propName, value:value
+        })
+    }
+}
 
 
 

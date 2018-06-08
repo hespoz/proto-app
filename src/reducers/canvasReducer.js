@@ -19,7 +19,7 @@ import {
     TEXT_FIELD,
     TEXT_AREA,
     SHOW_ADD_NEW_FORM,
-    HIDE_ADD_NEW_FORM
+    UPDATE_ACTION_ELEMENT_PROP
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -301,8 +301,15 @@ const addNewPage = (state, action) => {
     let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
     screenListCopy[index].elements = screen.elements.map((element) => {
         if (element.id === selectedElementInfoCopy.id) {
-            element.props["goToState"].value = screenId
+            element.props.actions = element.props.actions.map((actionElem) => {
+                if(actionElem.id === action.actionId) {
+                    actionElem["goToState"].value = screenId
+                }
+                return actionElem
+            })
+
             selectedElementInfoCopy = element
+
         }
         return element
     })
@@ -339,6 +346,39 @@ const updateElementProp = (state, action) => {
     }
 
 }
+
+
+const updateActionElementProp = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = _.cloneDeep(state.screenList[index])
+
+
+    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
+    screenListCopy[index].elements = screen.elements.map((element) => {
+        if (element.id === selectedElementInfoCopy.id) {
+
+            console.log("Entro")
+            element.props.actions = element.props.actions.map((actionElem) => {
+                if(actionElem.id === action.actionId) {
+                    actionElem[action.propName].value = action.value
+                }
+                return actionElem
+            })
+
+            selectedElementInfoCopy = element
+        }
+        return element
+    })
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElementInfo: selectedElementInfoCopy
+    }
+}
+
 
 const fetchFieldsInScreen = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -379,7 +419,8 @@ export default function reducer(state = {
     clipboardElements:[],
     selectedElementInfo:null,
     fieldsCurrentScreen:[],
-    showNewScreenForm: false
+    showNewScreenForm: false,
+    toActionId:null
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
@@ -434,13 +475,17 @@ export default function reducer(state = {
         case UPDATE_ELEMENT_PROP:
             return updateElementProp(state, action)
             break;
+        case UPDATE_ACTION_ELEMENT_PROP:
+            return updateActionElementProp(state, action)
+            break;
         case FETCH_FIELDS_SCREEN:
             return fetchFieldsInScreen(state)
             break;
         case SHOW_ADD_NEW_FORM:
             return {
                 ...state,
-                showNewScreenForm:true
+                showNewScreenForm:true,
+                toActionId:action.actionId
             }
         default:
             break;

@@ -4,6 +4,8 @@ import {
     BUTTON,
 } from '../commons/constants'
 
+import uuidv4 from 'uuid/v4'
+
 const generateProperties = (type, index) => {
     switch(type) {
         case TEXT_FIELD: case TEXT_AREA:
@@ -63,22 +65,27 @@ const generateProperties = (type, index) => {
         break;
         case BUTTON:
             return {
-                actionName:{
-                    label:"Action name",
-                    value:"",
-                },
-                actionDescription:{
-                    label:"Action description",
-                    value:"",
-                },
-                actionParameters:{
-                    label:"Action parameters",
-                    value:[],
-                },
-                goToState:{
-                    label:"Go to state",
-                    value:-1,
-                }
+
+                actions:[{
+                    id:uuidv4(),
+                    actionName:{
+                        label:"Action name",
+                        value:"",
+                    },
+                    actionDescription:{
+                        label:"Action description",
+                        value:"",
+                    },
+                    actionParameters:{
+                        label:"Action parameters",
+                        value:[],
+                    },
+                    goToState:{
+                        label:"Go to state",
+                        value:-1,
+                    }
+                }]
+
             }
             break;
         default:

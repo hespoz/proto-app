@@ -5,7 +5,7 @@ import {addNewPage} from "../../../actions/canvasAction";
 
 @connect((store) => {
     return {
-
+        toActionId:store.canvas.toActionId
     }
 })
 export default class NewScreen extends Component {
@@ -45,7 +45,7 @@ export default class NewScreen extends Component {
                         <Form.Field>
                             <Button fluid onClick={() => {
                                 if(this.state.isValid){
-                                    this.props.dispatch(addNewPage(this.state.screenName))
+                                    this.props.dispatch(addNewPage(this.props.toActionId, this.state.screenName))
                                 }
                             }}>
                                 New blank page
@@ -53,7 +53,7 @@ export default class NewScreen extends Component {
                             <Divider horizontal>Or</Divider>
                             <Button fluid onClick={() => {
                                 if(this.state.isValid) {
-                                    this.props.dispatch(addNewPage(this.state.screenName, true))
+                                    this.props.dispatch(addNewPage(this.props.toActionId, this.state.screenName, true))
                                 }
                             }}>
                                 Clone current screen
