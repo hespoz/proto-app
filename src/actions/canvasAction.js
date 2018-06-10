@@ -19,8 +19,11 @@ import {
     FETCH_FIELDS_SCREEN,
     SHOW_ADD_NEW_FORM,
     UPDATE_ACTION_ELEMENT_PROP,
-    ADD_NEW_ACTION
+    ADD_NEW_ACTION,
+    SAVE_LAST_STATE
 } from '../commons/constants'
+
+import axios from 'axios'
 
 
 export function addElementToScreen(screenId, type, top, left) {
@@ -176,7 +179,6 @@ export function fetchFieldsInScreen() {
 }
 
 export function showAddNewForm(actionId) {
-    console.log("showAddNewForm", actionId)
     return function (dispatch) {
         dispatch({
             type: SHOW_ADD_NEW_FORM,
@@ -201,5 +203,23 @@ export function addNewAction() {
     }
 }
 
+export function saveLastState(project) {
+    return async (dispatch) => {
+
+        const savedProject = await axios.post('http://localhost:9000/save', project, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+
+        dispatch({
+            type: SAVE_LAST_STATE,
+            savedProject: savedProject.data
+        })
+
+
+
+    }
+}
 
 

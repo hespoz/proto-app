@@ -20,7 +20,8 @@ import {
     TEXT_AREA,
     SHOW_ADD_NEW_FORM,
     UPDATE_ACTION_ELEMENT_PROP,
-    ADD_NEW_ACTION
+    ADD_NEW_ACTION,
+    SAVE_LAST_STATE
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -429,10 +430,18 @@ const addNewAction = (state) => {
 
 }
 
+const saveLastState = (state, action) => {
+    return {
+        ...state,
+        projectId: action.savedProject.projectId,
+        screenList: action.savedProject.screenList
+    }
+}
 
 const defaultScreenId = uuidv4()
 
 export default function reducer(state = {
+    projectId:null,
     screenList: [{
         id:defaultScreenId,
         name: 'Screen',
@@ -515,6 +524,9 @@ export default function reducer(state = {
             }
         case ADD_NEW_ACTION:
             return addNewAction(state)
+            break;
+        case SAVE_LAST_STATE:
+            return saveLastState(state, action)
             break;
         default:
             break;

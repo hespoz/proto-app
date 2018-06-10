@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
 import {
     addElementToScreen,
-    updateElementPosition,
+    saveLastState,
     updateElementPositionV2,
     setHold,
     clearAllSelections,
@@ -53,6 +53,7 @@ const elementTarget = {
 
 @connect((store) => {
     return {
+        projectId: store.canvas.projectId,
         screenList: store.canvas.screenList,
         selectedPageId: store.canvas.selectedPageId
     }
@@ -84,6 +85,12 @@ export default class TargetBox extends Component {
         document.onkeyup = (e) => {
             this.props.dispatch(setHold(false))
         }
+
+        //Save first state of the application
+        this.props.dispatch(saveLastState({
+            id: this.props.projectId,
+            screenList: this.props.screenList
+        }))
 
     }
 
