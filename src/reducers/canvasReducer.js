@@ -29,6 +29,114 @@ import uuidv4 from 'uuid/v4'
 
 import { generateHelper, generateAction } from './generateHelper'
 
+
+//Helpers --- TODO: Move to a external file.
+const getLastSelectedElement = (state, selectedElementId) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    return _.find(screenListCopy[index].elements, (element) => {
+        return element.id === selectedElementId
+    })
+}
+
+const elementsOperation = (elements, selectedElementId, transformFn) => {
+    return elements.map((element) => {
+        if (element.id === selectedElementId) {
+            element = transformFn !== undefined ? transformFn(element) : element
+        }
+        return element
+    })
+}
+
+const updateProjectScreenList = (state, selectedElementId, fn) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+    screenListCopy[index].elements = elementsOperation(state.screenList[index].elements, state.selectedElementInfo.id, fn)
+    return screenListCopy
+}
+
+
+
+//Refactored
+const addNewAction = (state) => {
+    return {
+        ...state,
+        screenList: updateProjectScreenList(state, state.selectedElementInfo.id, (element) => {
+            element.props.actions.push(generateAction())
+            return element
+        }),
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+    }
+}
+
+//Refactored
+const resizeElement = (state, action) => {
+    return {
+        ...state,
+        screenList: updateProjectScreenList(state, action.element.id, (element) => {
+            element.height = action.element.height
+            element.width = action.element.width
+            return element
+        })
+    }
+}
+
+//Refactored
+const updateLabel = (state, action) => {
+    return {
+        ...state,
+        screenList: updateProjectScreenList(state, action.element.id, (element) => {
+            element.label = action.element.label
+            return element
+        })
+    }
+}
+
+//Refactored
+const updateElementProp = (state, action) => {
+
+    return {
+        ...state,
+        screenList: updateProjectScreenList(state, state.selectedElementInfo.id, (element) => {
+            element.props[action.propName].value = action.value
+            return element
+        }),
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+    }
+
+}
+
+
+//Refactored
+const updateActionElementProp = (state, action) => {
+    return {
+        ...state,
+        screenList: updateProjectScreenList(state, state.selectedElementInfo.id, (element) => {
+            element.props.actions = element.props.actions.map((actionElem) => {
+                if(actionElem.id === action.actionId) {
+                    actionElem[action.propName].value = action.value
+                }
+                return actionElem
+            })
+            return element
+        }),
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 const countFieldElements = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
@@ -91,26 +199,7 @@ const removeElement = (state, action) => {
     }
 }
 
-const updateElementPosition = (state, action) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
-    let screen = state.screenList[index]
-
-
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === action.element.id) {
-            element.top = action.element.top
-            element.left = action.element.left
-        }
-        return element
-    })
-
-    return {
-        ...state,
-        screenList: screenListCopy
-    }
-}
 
 
 const updateElementPositionV2 = (state, action) => {
@@ -150,46 +239,9 @@ const updateElementPositionV2 = (state, action) => {
     }
 }
 
-const resizeElement = (state, action) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = state.screenList[index]
 
 
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === action.element.id) {
-            element.height = action.element.height
-            element.width = action.element.width
-        }
-        return element
-    })
 
-    return {
-        ...state,
-        screenList: screenListCopy
-    }
-}
-
-const updateLabel = (state, action) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = state.screenList[index]
-
-
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === action.element.id) {
-            element.label = action.element.label
-        }
-        return element
-    })
-
-    return {
-        ...state,
-        screenList: screenListCopy
-    }
-}
 
 const selectElement = (state, action) => {
     let selectedElements = _.cloneDeep(state.selectedElements)
@@ -326,60 +378,10 @@ const addNewPage = (state, action) => {
     }
 }
 
-const updateElementProp = (state, action) => {
-
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = _.cloneDeep(state.screenList[index])
 
 
-    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === selectedElementInfoCopy.id) {
-            element.props[action.propName].value = action.value
-            selectedElementInfoCopy = element
-        }
-        return element
-    })
-
-    return {
-        ...state,
-        screenList: screenListCopy,
-        selectedElementInfo: selectedElementInfoCopy
-    }
-
-}
 
 
-const updateActionElementProp = (state, action) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = _.cloneDeep(state.screenList[index])
-
-
-    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === selectedElementInfoCopy.id) {
-            element.props.actions = element.props.actions.map((actionElem) => {
-                if(actionElem.id === action.actionId) {
-                    actionElem[action.propName].value = action.value
-                }
-                return actionElem
-            })
-
-            selectedElementInfoCopy = element
-        }
-        return element
-    })
-
-    return {
-        ...state,
-        screenList: screenListCopy,
-        selectedElementInfo: selectedElementInfoCopy
-    }
-}
 
 
 const fetchFieldsInScreen = (state) => {
@@ -406,29 +408,8 @@ const fetchFieldsInScreen = (state) => {
 
 }
 
-const addNewAction = (state) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
-    let screen = _.cloneDeep(state.screenList[index])
 
-    let selectedElementInfoCopy = _.cloneDeep(state.selectedElementInfo)
-
-    screenListCopy[index].elements = screen.elements.map((element) => {
-        if (element.id === selectedElementInfoCopy.id) {
-            element.props.actions.push(generateAction())
-            selectedElementInfoCopy = element
-        }
-        return element
-    })
-
-    return {
-        ...state,
-        screenList: screenListCopy,
-        selectedElementInfo: selectedElementInfoCopy
-    }
-
-}
 
 const saveLastState = (state, action) => {
     return {
@@ -461,9 +442,9 @@ export default function reducer(state = {
         case ADD_ELEMENT_TO_SCREEN:
             return addElement(state, action)
             break;
-        case UPDATE_ELEMENT_POSITION:
+        /*case UPDATE_ELEMENT_POSITION:
             return updateElementPosition(state, action)
-            break;
+            break;*/
         case UPDATE_ELEMENT_POSITION_V2:
             return updateElementPositionV2(state, action)
             break;
