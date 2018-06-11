@@ -25,6 +25,7 @@ import {
 
 import axios from 'axios'
 
+const hostUrl = process.env.API_HOST || 'http://localhost:9000'
 
 export function addElementToScreen(screenId, type, top, left) {
     return function (dispatch) {
@@ -206,7 +207,7 @@ export function addNewAction() {
 export function saveLastState(project) {
     return async (dispatch) => {
 
-        const savedProject = await axios.post('http://localhost:9000/save', project, {
+        const savedProject = await axios.post(`${hostUrl}/save`, project, {
             headers: {
                 'Content-Type': 'application/json',
             }
