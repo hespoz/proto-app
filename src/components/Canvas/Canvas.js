@@ -3,37 +3,41 @@ import {DropTarget} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
+
 import {
     addElementToScreen,
     saveLastState,
-    updateElementPositionV2,
+    updateElementPosition,
     setHold,
     clearAllSelections,
     copy,
-    paste
+    paste,
+    setScreenUpdatedToFalse
 } from '../../actions/canvasAction'
 
 import './Canvas.scss'
 
 import Browser from '../../commons/Screens/Browser'
-import _ from "lodash";
+import _ from 'lodash'
+
+let timerId = null
+
+const timerUpdate = (fn) => {
+    clearTimeout(timerId)
+    timerId = setTimeout(() => {
+        fn
+    },3000)
+}
 
 
 const elementTarget = {
     drop(props, monitor, component) {
-        //Update item list.
 
         const item = monitor.getItem()
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
-            /*const left = Math.round(item.left + delta.x)
-            const top = Math.round(item.top + delta.y)
-            props.dispatch(updateElementPosition(1, item.id, top, left))*/
-
-
-            props.dispatch(updateElementPositionV2(item.id, delta.x,delta.y))
-
+            props.dispatch(updateElementPosition(item.id, delta.x, delta.y))
         } else {
 
             const clientOffset = monitor.getClientOffset();
@@ -55,7 +59,8 @@ const elementTarget = {
     return {
         projectId: store.canvas.projectId,
         screenList: store.canvas.screenList,
-        selectedPageId: store.canvas.selectedPageId
+        selectedPageId: store.canvas.selectedPageId,
+        screenUpdated: store.canvas.screenUpdated
     }
 })
 @DropTarget(ItemTypes.ELEMENT, elementTarget, (connect, monitor) => ({
@@ -92,6 +97,34 @@ export default class TargetBox extends Component {
             screenList: this.props.screenList
         }))
 
+
+        //setScreenUpdatedToFalse
+
+        /*setTimeout(() => {
+
+        },3000)*/
+
+
+
+    }
+
+    componentDidUpdate = (props) => {
+        if (this.props.screenUpdated) {
+            this.props.dispatch(saveLastState({
+                id: this.props.projectId,
+                screenList: this.props.screenList
+            }))
+        }
+    }
+
+    timerUpdate = () => {
+        clearTimeout(timerId)
+        timerId = setTimeout(() => {
+            this.props.dispatch(saveLastState({
+                id: this.props.projectId,
+                screenList: this.props.screenList
+            }))
+        },3000)
     }
 
     clearSelection = (e) => {

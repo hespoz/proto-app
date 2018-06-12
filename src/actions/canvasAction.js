@@ -4,7 +4,6 @@ import {
     SET_RESIZE_STATE,
     CLEAR_RESIZE_STATE,
     UPDATE_ELEMENT_POSITION,
-    UPDATE_ELEMENT_POSITION_V2,
     RESIZE_ELEMENT,
     UPDATE_LABEL,
     SELECT_ELEMENT,
@@ -20,12 +19,21 @@ import {
     SHOW_ADD_NEW_FORM,
     UPDATE_ACTION_ELEMENT_PROP,
     ADD_NEW_ACTION,
-    SAVE_LAST_STATE
+    SAVE_LAST_STATE,
+    SET_SCREEN_UPDATED_TO_FALSE
 } from '../commons/constants'
 
 import axios from 'axios'
 
 const hostUrl = process.env.API_HOST || 'http://localhost:9000'
+
+export function setScreenUpdatedToFalse () {
+    return function (dispatch) {
+        dispatch({
+            type: SET_SCREEN_UPDATED_TO_FALSE
+        })
+    }
+}
 
 export function addElementToScreen(screenId, type, top, left) {
     return function (dispatch) {
@@ -43,22 +51,10 @@ export function addElementToScreen(screenId, type, top, left) {
     }
 }
 
-export function updateElementPosition(screenId, id, top, left) {
+export function updateElementPosition(id, deltaX, deltaY) {
     return function (dispatch) {
         dispatch({
-            type: UPDATE_ELEMENT_POSITION, screenId: screenId, element: {
-                id: id,
-                top: top,
-                left: left
-            }
-        })
-    }
-}
-
-export function updateElementPositionV2(id, deltaX, deltaY) {
-    return function (dispatch) {
-        dispatch({
-            type: UPDATE_ELEMENT_POSITION_V2, element: {
+            type: UPDATE_ELEMENT_POSITION, element: {
                 id:id,
                 deltaX: deltaX,
                 deltaY: deltaY
@@ -222,5 +218,9 @@ export function saveLastState(project) {
 
     }
 }
+
+
+
+
 
 
