@@ -1,7 +1,6 @@
 import {
     ADD_ELEMENT_TO_SCREEN,
     UPDATE_ELEMENT_POSITION,
-    UPDATE_ELEMENT_POSITION_V2,
     SET_RESIZE_STATE,
     CLEAR_RESIZE_STATE,
     RESIZE_ELEMENT,
@@ -21,7 +20,8 @@ import {
     SHOW_ADD_NEW_FORM,
     UPDATE_ACTION_ELEMENT_PROP,
     ADD_NEW_ACTION,
-    SAVE_LAST_STATE
+    SAVE_LAST_STATE,
+    SET_SCREEN_UPDATED_TO_FALSE
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -29,8 +29,12 @@ import uuidv4 from 'uuid/v4'
 
 import { generateHelper, generateAction } from './generateHelper'
 
+const getIndexByScreenId = (screenList, selectedPageId) => {
+    return _.findIndex(screenList, (s) => {
+        return s.id === selectedPageId
+    })
+}
 
-//Helpers --- TODO: Move to a external file.
 const getLastSelectedElement = (state, selectedElementId) => {
     let screenListCopy = _.cloneDeep(state.screenList)
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -57,8 +61,6 @@ const updateProjectScreenList = (state, selectedElementId, fn) => {
 }
 
 
-
-//Refactored
 const addNewAction = (state) => {
     return {
         ...state,
@@ -66,11 +68,11 @@ const addNewAction = (state) => {
             element.props.actions.push(generateAction())
             return element
         }),
-        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id),
+        screenUpdated:true
     }
 }
 
-//Refactored
 const resizeElement = (state, action) => {
     return {
         ...state,
@@ -78,22 +80,24 @@ const resizeElement = (state, action) => {
             element.height = action.element.height
             element.width = action.element.width
             return element
-        })
+        }),
+        screenUpdated:true
     }
 }
 
-//Refactored
+
 const updateLabel = (state, action) => {
     return {
         ...state,
         screenList: updateProjectScreenList(state, action.element.id, (element) => {
             element.label = action.element.label
             return element
-        })
+        }),
+        screenUpdated:true
     }
 }
 
-//Refactored
+
 const updateElementProp = (state, action) => {
 
     return {
@@ -102,13 +106,13 @@ const updateElementProp = (state, action) => {
             element.props[action.propName].value = action.value
             return element
         }),
-        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id),
+        screenUpdated:true
     }
 
 }
 
 
-//Refactored
 const updateActionElementProp = (state, action) => {
     return {
         ...state,
@@ -121,42 +125,11 @@ const updateActionElementProp = (state, action) => {
             })
             return element
         }),
-        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id)
+        selectedElementInfo: getLastSelectedElement(state, state.selectedElementInfo.id),
+        screenUpdated:true
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-const countFieldElements = (state) => {
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = state.screenList[index]
-
-    let fieldElementsCount = 1
-    _.forEach(screen.elements, (element) => {
-        if(element.type === TEXT_FIELD || element.type === TEXT_AREA) {
-            fieldElementsCount++
-        }
-    })
-
-    return fieldElementsCount
-}
-
-const getIndexByScreenId = (screenList, selectedPageId) => {
-    return _.findIndex(screenList, (s) => {
-        return s.id === selectedPageId
-    })
-}
 
 const addElement = (state, action) => {
     const screenListCopy = _.cloneDeep(state.screenList)
@@ -175,9 +148,11 @@ const addElement = (state, action) => {
         ...state,
         screenList: screenListCopy,
         selectedElements: [action.element.id],
-        selectedElementInfo: action.element
+        selectedElementInfo: action.element,
+        screenUpdated:true
     }
 }
+
 
 const removeElement = (state, action) => {
     const screenListCopy = _.cloneDeep(state.screenList)
@@ -195,52 +170,10 @@ const removeElement = (state, action) => {
     return {
         ...state,
         screenList: screenListCopy,
-        selectedElementInfo:null
+        selectedElementInfo:null,
+        screenUpdated:true
     }
 }
-
-
-
-
-const updateElementPositionV2 = (state, action) => {
-    let screenListCopy = _.cloneDeep(state.screenList)
-    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-
-    let screen = state.screenList[index]
-
-    let selectedElementsCopy = _.cloneDeep(state.selectedElements)
-
-    //if id element is not in the selected. then remove all the previous selections and only move the drag element
-    if (_.find(selectedElementsCopy, (id) => {return id === action.element.id}) === undefined) {
-        selectedElementsCopy = []
-
-        screenListCopy[index].elements = screen.elements.map((element) => {
-            if (element.id === action.element.id) {
-                element.top = Math.round(element.top + action.element.deltaY)
-                element.left = Math.round(element.left + action.element.deltaX)
-            }
-            return element
-        })
-
-    } else {
-        screenListCopy[index].elements = screen.elements.map((element) => {
-            if (_.find(selectedElementsCopy, (id) => {return id === element.id}) !== undefined) {
-                element.top = Math.round(element.top + action.element.deltaY)
-                element.left = Math.round(element.left + action.element.deltaX)
-            }
-            return element
-        })
-    }
-
-    return {
-        ...state,
-        screenList: screenListCopy,
-        selectedElements:selectedElementsCopy
-    }
-}
-
-
-
 
 
 const selectElement = (state, action) => {
@@ -255,9 +188,7 @@ const selectElement = (state, action) => {
 
     let selectedElementInfo = null
     if(selectedElements.length === 1) {
-        const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-        let screen = state.screenList[index]
-        selectedElementInfo = getSelectedElementInfo(screen, selectedElements[0])
+        selectedElementInfo = getLastSelectedElement(state, selectedElements[0])
     } else {
         selectedElementInfo = null
     }
@@ -265,17 +196,12 @@ const selectElement = (state, action) => {
     return {
         ...state,
         selectedElements: selectedElements,
-        selectedElementInfo:selectedElementInfo
+        selectedElementInfo:selectedElementInfo,
+        screenUpdated:true
     }
 }
 
-const getSelectedElementInfo = (screen, elementIndex) => {
-        return _.find(screen.elements, (element) => {
-            return element.id === elementIndex
-        })
-}
-
-const copyToClipboard = (state, action) => {
+const copyToClipboard = (state) => {
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
 
     let screen = state.screenList[index]
@@ -286,13 +212,14 @@ const copyToClipboard = (state, action) => {
 
     return {
         ...state,
-        clipboardElements: clipBoard
+        clipboardElements: clipBoard,
+        screenUpdated:true
     }
 
 }
 
 
-const paste = (state, action) => {
+const paste = (state) => {
 
     let screenListCopy = _.cloneDeep(state.screenList)
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
@@ -319,10 +246,73 @@ const paste = (state, action) => {
 
     return {
         ...state,
-        screenList: screenListCopy
+        screenList: screenListCopy,
+        screenUpdated:true
     }
 
 }
+
+
+const updateElementPosition = (state, action) => {
+    let screenListCopy = _.cloneDeep(state.screenList)
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    let selectedElementsCopy = _.cloneDeep(state.selectedElements)
+
+    const singleMove = () => {
+
+        selectedElementsCopy = []
+
+        screenListCopy[index].elements = elementsOperation(state.screenList[index].elements, action.element.id, (element) => {
+            element.top = Math.round(element.top + action.element.deltaY)
+            element.left = Math.round(element.left + action.element.deltaX)
+            return element
+        })
+
+    }
+
+    const groupMove = () => {
+        screenListCopy[index].elements = screen.elements.map((element) => {
+            if (_.find(selectedElementsCopy, (id) => {return id === element.id}) !== undefined) {
+                element.top = Math.round(element.top + action.element.deltaY)
+                element.left = Math.round(element.left + action.element.deltaX)
+            }
+            return element
+        })
+    }
+
+    //if id element is not in the selected. then remove all the previous selections and only move the drag element
+    if (_.find(selectedElementsCopy, (id) => {return id === action.element.id}) === undefined) {
+        singleMove()
+    } else {
+        groupMove()
+    }
+
+    return {
+        ...state,
+        screenList: screenListCopy,
+        selectedElements:selectedElementsCopy,
+        screenUpdated:true
+    }
+}
+
+const countFieldElements = (state) => {
+    const index = getIndexByScreenId(state.screenList, state.selectedPageId)
+
+    let screen = state.screenList[index]
+
+    let fieldElementsCount = 1
+    _.forEach(screen.elements, (element) => {
+        if(element.type === TEXT_FIELD || element.type === TEXT_AREA) {
+            fieldElementsCount++
+        }
+    })
+
+    return fieldElementsCount
+}
+
 
 const addNewPage = (state, action) => {
 
@@ -370,18 +360,15 @@ const addNewPage = (state, action) => {
         return element
     })
 
+
     return {
         ...state,
         screenList: screenListCopy,
         showNewScreenForm:false,
-        selectedElementInfo: selectedElementInfoCopy
+        selectedElementInfo: selectedElementInfoCopy,
+        screenUpdated:true
     }
 }
-
-
-
-
-
 
 
 const fetchFieldsInScreen = (state) => {
@@ -403,19 +390,18 @@ const fetchFieldsInScreen = (state) => {
 
     return {
         ...state,
-        fieldsCurrentScreen: fieldOptions
+        fieldsCurrentScreen: fieldOptions,
+        screenUpdated:true
     }
 
 }
 
-
-
-
-const saveLastState = (state, action) => {
+const updateStateProject = (state, action) => {
     return {
         ...state,
         projectId: action.savedProject.projectId,
-        screenList: action.savedProject.screenList
+        screenList: action.savedProject.screenList,
+        screenUpdated: false
     }
 }
 
@@ -436,17 +422,15 @@ export default function reducer(state = {
     selectedElementInfo:null,
     fieldsCurrentScreen:[],
     showNewScreenForm: false,
-    toActionId:null
+    toActionId:null,
+    screenUpdated:false
 }, action) {
     switch (action.type) {
         case ADD_ELEMENT_TO_SCREEN:
             return addElement(state, action)
             break;
-        /*case UPDATE_ELEMENT_POSITION:
+        case UPDATE_ELEMENT_POSITION:
             return updateElementPosition(state, action)
-            break;*/
-        case UPDATE_ELEMENT_POSITION_V2:
-            return updateElementPositionV2(state, action)
             break;
         case RESIZE_ELEMENT:
             return resizeElement(state, action)
@@ -473,10 +457,10 @@ export default function reducer(state = {
                 return {...state, selectedElements: []}
             break;
         case COPY_SELECTION:
-            return copyToClipboard(state, action)
+            return copyToClipboard(state)
             break;
         case PASTE:
-            return paste(state, action)
+            return paste(state)
             break;
         case ADD_NEW_PAGE:
             return addNewPage(state, action)
@@ -507,8 +491,13 @@ export default function reducer(state = {
             return addNewAction(state)
             break;
         case SAVE_LAST_STATE:
-            return saveLastState(state, action)
+            return updateStateProject(state, action)
             break;
+        case SET_SCREEN_UPDATED_TO_FALSE:
+            return {
+                ...state,
+                screenUpdated:false
+            }
         default:
             break;
     }
