@@ -8,12 +8,21 @@ import DragItem from './components/DragItem/DragItem'
 import Canvas from './components/Canvas/Canvas'
 import ConfigPanel from './components/ConfigPanel/ConfigPanel'
 
+import {Label} from 'semantic-ui-react'
+
+import {connect} from 'react-redux'
+
 //import HTML5Backend from 'react-dnd-html5-backend'
 
 import MultiBackend from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch'
 
 
+@connect((store) => {
+    return {
+        screenUpdated: store.canvas.screenUpdated
+    }
+})
 @DragDropContext(MultiBackend(HTML5toTouch))
 export default class App extends Component {
     render() {
@@ -34,6 +43,22 @@ export default class App extends Component {
                         </div>
                     </div>
                     <div className="center-panel">
+
+                        {!this.props.screenUpdated ?
+                            (
+                                <Label color={'green'} key={'green'}>
+                                    Saved
+                                </Label>
+                            )
+                            :
+                            (
+                                <Label color={'grey'} key={'grey'}>
+                                    Pending
+                                </Label>
+                            )
+                        }
+
+
                         <Canvas/>
                     </div>
 

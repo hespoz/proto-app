@@ -20,15 +20,6 @@ import './Canvas.scss'
 import Browser from '../../commons/Screens/Browser'
 import _ from 'lodash'
 
-let timerId = null
-
-const timerUpdate = (fn) => {
-    clearTimeout(timerId)
-    timerId = setTimeout(() => {
-        fn
-    },3000)
-}
-
 
 const elementTarget = {
     drop(props, monitor, component) {
@@ -98,34 +89,18 @@ export default class TargetBox extends Component {
         }))
 
 
-        //setScreenUpdatedToFalse
-
-        /*setTimeout(() => {
-
-        },3000)*/
-
+        setInterval(() => {
+            if (this.props.screenUpdated) {
+                this.props.dispatch(saveLastState({
+                    id: this.props.projectId,
+                    screenList: this.props.screenList
+                }))
+            }
+        },5000)
 
 
     }
 
-    componentDidUpdate = (props) => {
-        if (this.props.screenUpdated) {
-            this.props.dispatch(saveLastState({
-                id: this.props.projectId,
-                screenList: this.props.screenList
-            }))
-        }
-    }
-
-    timerUpdate = () => {
-        clearTimeout(timerId)
-        timerId = setTimeout(() => {
-            this.props.dispatch(saveLastState({
-                id: this.props.projectId,
-                screenList: this.props.screenList
-            }))
-        },3000)
-    }
 
     clearSelection = (e) => {
         if (e.target.id === 'canvasDrawer') {
