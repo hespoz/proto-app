@@ -25,7 +25,7 @@ import {
 
 import axios from 'axios'
 
-const hostUrl = process.env.API_HOST
+const hostUrl = process.env.NODE_ENV === 'production' ? 'https://poroto-server.herokuapp.com' : 'http://localhost:9000'
 
 export function setScreenUpdatedToFalse () {
     return function (dispatch) {
