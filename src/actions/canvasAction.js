@@ -25,7 +25,7 @@ import {
 
 import axios from 'axios'
 
-const hostUrl = process.env.API_HOST || 'http://localhost:9000'
+const hostUrl = process.env.API_HOST
 
 export function setScreenUpdatedToFalse () {
     return function (dispatch) {
