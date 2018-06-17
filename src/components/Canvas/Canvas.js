@@ -3,6 +3,7 @@ import {DropTarget} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import {findDOMNode} from 'react-dom'
+import { withRouter } from 'react-router'
 
 import {
     addElementToScreen,
@@ -11,9 +12,12 @@ import {
     setHold,
     clearAllSelections,
     copy,
-    paste,
-    setScreenUpdatedToFalse
+    paste
 } from '../../actions/canvasAction'
+
+import {
+    getProjectById
+} from '../../actions/projectAction'
 
 import './Canvas.scss'
 
@@ -60,7 +64,7 @@ const elementTarget = {
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType()
 }))
-export default class TargetBox extends Component {
+export default withRouter(class TargetBox extends Component {
 
     state = {activeIndex: 1}
 
@@ -83,16 +87,17 @@ export default class TargetBox extends Component {
         }
 
         //Save first state of the application
-        this.props.dispatch(saveLastState({
-            id: this.props.projectId,
-            screenList: this.props.screenList
-        }))
+        const {match} = this.props
+
+        if(match.params.id) {
+            this.props.dispatch(getProjectById(match.params.id))
+        }
 
 
         setInterval(() => {
             if (this.props.screenUpdated) {
                 this.props.dispatch(saveLastState({
-                    id: this.props.projectId,
+                    id: match.params.id,
                     screenList: this.props.screenList
                 }))
             }
@@ -109,6 +114,7 @@ export default class TargetBox extends Component {
     }
 
     getSelectedScreen = () => {
+
         let screenListCopy = _.cloneDeep(this.props.screenList)
 
         const index = _.findIndex(screenListCopy, (s) => {
@@ -116,6 +122,7 @@ export default class TargetBox extends Component {
         })
 
         return screenListCopy[index]
+
     }
 
     render() {
@@ -128,4 +135,4 @@ export default class TargetBox extends Component {
             </div>,
         )
     }
-}
+})

@@ -12,7 +12,8 @@ import {Label} from 'semantic-ui-react'
 
 import {connect} from 'react-redux'
 
-//import HTML5Backend from 'react-dnd-html5-backend'
+import { Button } from 'semantic-ui-react'
+import { withRouter } from 'react-router'
 
 import MultiBackend from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch'
@@ -24,7 +25,7 @@ import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch'
     }
 })
 @DragDropContext(MultiBackend(HTML5toTouch))
-export default class App extends Component {
+export default withRouter(class App extends Component {
     render() {
         return (
             <div className="container-fluid">
@@ -58,6 +59,9 @@ export default class App extends Component {
                             )
                         }
 
+                        <Button onClick={() => {
+                            this.props.history.push(`/run/${this.props.match.params.id}`)
+                        }}>Preview</Button>
 
                         <Canvas/>
                     </div>
@@ -70,4 +74,4 @@ export default class App extends Component {
             </div>
         );
     }
-}
+})

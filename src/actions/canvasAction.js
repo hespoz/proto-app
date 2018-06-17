@@ -25,7 +25,7 @@ import {
 
 import axios from 'axios'
 
-const hostUrl = process.env.NODE_ENV === 'production' ? 'https://poroto-server.herokuapp.com' : 'http://localhost:9000'
+const hostUrl = process.env.API_HOST || 'http://localhost:9000'
 
 
 export function setScreenUpdatedToFalse () {
@@ -203,6 +203,8 @@ export function addNewAction() {
 
 export function saveLastState(project) {
     return async (dispatch) => {
+
+        console.log("project", project)
 
         const savedProject = await axios.post(`${hostUrl}/save`, project, {
             headers: {

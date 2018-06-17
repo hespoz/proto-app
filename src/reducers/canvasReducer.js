@@ -21,7 +21,7 @@ import {
     UPDATE_ACTION_ELEMENT_PROP,
     ADD_NEW_ACTION,
     SAVE_LAST_STATE,
-    SET_SCREEN_UPDATED_TO_FALSE
+    SET_SCREEN_UPDATED_TO_FALSE, GET_PROJECT_BY_ID
 } from '../commons/constants'
 import _ from 'lodash'
 
@@ -498,6 +498,16 @@ export default function reducer(state = {
                 ...state,
                 screenUpdated:false
             }
+        case GET_PROJECT_BY_ID:
+            return {
+                ...state,
+                projectId: action.savedProject._id,
+                screenList: action.savedProject.screenList,
+                selectedPageId: action.savedProject.screenList[0].id
+            }
+            break;
+
+
         default:
             break;
     }
