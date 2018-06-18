@@ -15,17 +15,41 @@ import {connect} from 'react-redux'
 import { Button } from 'semantic-ui-react'
 import { withRouter } from 'react-router'
 
-import MultiBackend from 'react-dnd-multi-backend';
+import MultiBackend from 'react-dnd-multi-backend'
 import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch'
+import {getProjectById} from './actions/projectAction'
+import {saveLastState} from './actions/canvasAction'
 
 
 @connect((store) => {
     return {
-        screenUpdated: store.canvas.screenUpdated
+        screenUpdated: store.canvas.screenUpdated,
+        screenList: store.canvas.screenList,
     }
 })
 @DragDropContext(MultiBackend(HTML5toTouch))
 export default withRouter(class App extends Component {
+
+    componentDidMount = () => {
+
+        //Save first state of the application
+        const {match} = this.props
+
+        if(match.params.id) {
+            this.props.dispatch(getProjectById(match.params.id))
+        }
+
+        setInterval(() => {
+            if (this.props.screenUpdated) {
+                this.props.dispatch(saveLastState({
+                    id: match.params.id,
+                    screenList: this.props.screenList
+                }))
+            }
+        },5000)
+
+    }
+
     render() {
         return (
             <div className="container-fluid">
@@ -74,4 +98,6 @@ export default withRouter(class App extends Component {
             </div>
         );
     }
+
+
 })

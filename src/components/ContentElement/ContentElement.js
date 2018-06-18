@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { ControlType } from '../ControlType'
+import { ControlType } from '../../commons/ControlType'
 
 import {updateLabel} from '../../actions/canvasAction'
 
@@ -116,4 +117,12 @@ export default class ContentElement extends Component {
             </div>
         )
     }
+}
+
+
+ContentElement.propTypes = {
+    id: PropTypes.string,
+    type: PropTypes.string,
+    label: PropTypes.string,
+    dropedElement: PropTypes.bool
 }

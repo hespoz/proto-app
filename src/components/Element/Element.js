@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+
 import {DragSource} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
+
 import _ from 'lodash'
 
 import '../../App.scss'
 import './Element.scss'
 
 import {setResizeState, clearResizeState, resizeElement, selectElement, removeElement} from '../../actions/canvasAction'
+import RunElement from "./RunElement";
 
 let element = null
 let resizeHandle = null
@@ -92,14 +96,13 @@ export default class Element extends Component {
 
         const {
             hideSourceOnDrag,
-            left,
-            top,
             connectDragSource,
-            isDragging,
-            children
+            isDragging
         } = this.props
 
 
+        const left = this.props.left
+        const top = this.props.top
         const height = `${this.props.height}px`
         const width = `${this.props.width}px`
 
@@ -121,9 +124,22 @@ export default class Element extends Component {
                 }}
                 ></div>
 
-                {children}
+                {this.props.children}
 
             </div>,
         )
     }
+}
+
+
+Element.propTypes = {
+    key: PropTypes.number,
+    item: PropTypes.shape({
+        id: PropTypes.string,
+        left: PropTypes.number,
+        top: PropTypes.number,
+        height: PropTypes.number,
+        width: PropTypes.number
+    }),
+    hideSourceOnDrag:PropTypes.bool
 }

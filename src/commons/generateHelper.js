@@ -2,7 +2,7 @@ import {
     TEXT_FIELD,
     TEXT_AREA,
     BUTTON,
-} from '../commons/constants'
+} from './constants'
 
 import uuidv4 from 'uuid/v4'
 

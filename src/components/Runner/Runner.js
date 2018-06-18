@@ -1,13 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import { withRouter } from 'react-router'
-import Browser from '../../commons/Screens/Browser'
-import {getProjectById} from "../../actions/projectAction";
+import Browser from '../Screens/Browser'
+import {getProjectById} from '../../actions/projectAction'
+import _ from 'lodash'
+
 
 @connect((store) => {
     return {
         projectId: store.canvas.projectId,
-        screenList: store.canvas.screenList
+        screenList: store.canvas.screenList,
+        currentScreenId: store.runner.currentScreenId
     }
 })
 export default withRouter(class Runner extends Component {
@@ -21,15 +24,19 @@ export default withRouter(class Runner extends Component {
         }
     }
 
-    renderScreens = () => {
-        return this.props.screenList.map((screen) => {
-            return <Browser running screen={screen}/>
-        })
+    renderScreen = () => {
+        const { currentScreenId, screenList } = this.props
+
+        if(currentScreenId) {
+            return <Browser running screen={_.find(screenList, (screen) => screen.id === currentScreenId)}/>
+        } else {
+            return <Browser running screen={screenList[0]}/>
+        }
+
     }
 
-    //Render all screens, but just hide and show.
     render() {
-        return this.renderScreens()
+        return this.renderScreen()
     }
 
 })
