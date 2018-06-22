@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 
-import Browser from '../../commons/Screens/Browser'
+import Browser from '../Screens/Browser'
 
 import './PageList.scss'
 

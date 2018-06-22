@@ -7,7 +7,6 @@ import { withRouter } from 'react-router'
 
 import {
     addElementToScreen,
-    saveLastState,
     updateElementPosition,
     setHold,
     clearAllSelections,
@@ -15,13 +14,11 @@ import {
     paste
 } from '../../actions/canvasAction'
 
-import {
-    getProjectById
-} from '../../actions/projectAction'
+
 
 import './Canvas.scss'
 
-import Browser from '../../commons/Screens/Browser'
+import Browser from '../Screens/Browser'
 import _ from 'lodash'
 
 
@@ -29,6 +26,8 @@ const elementTarget = {
     drop(props, monitor, component) {
 
         const item = monitor.getItem()
+
+        console.log("rapido", item)
 
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
@@ -71,7 +70,6 @@ export default withRouter(class TargetBox extends Component {
     componentDidMount = () => {
 
         document.onkeydown = (e) => {
-            console.log(e.keyCode)
             if (e.keyCode === 91 || e.keyCode === 17) {
                 this.props.dispatch(setHold(true))
             } else if (e.keyCode === 67) {
@@ -79,30 +77,11 @@ export default withRouter(class TargetBox extends Component {
             } else if (e.keyCode === 86) {
                 this.props.dispatch(paste(1))
             }
-
         }
 
         document.onkeyup = (e) => {
             this.props.dispatch(setHold(false))
         }
-
-        //Save first state of the application
-        const {match} = this.props
-
-        if(match.params.id) {
-            this.props.dispatch(getProjectById(match.params.id))
-        }
-
-
-        setInterval(() => {
-            if (this.props.screenUpdated) {
-                this.props.dispatch(saveLastState({
-                    id: match.params.id,
-                    screenList: this.props.screenList
-                }))
-            }
-        },5000)
-
 
     }
 

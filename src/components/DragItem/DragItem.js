@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { ItemTypes } from '../../commons/ItemTypes'
 import { DragSource } from 'react-dnd'
-import ContentElement from '../../commons/ContentElement/ContentElement'
+import ContentElement from '../ContentElement/ContentElement'
 import './DragItem.scss'
 
 const formItemSource = {

@@ -27,7 +27,7 @@ import _ from 'lodash'
 
 import uuidv4 from 'uuid/v4'
 
-import { generateHelper, generateAction } from './generateHelper'
+import { generateHelper, generateAction } from '../commons/generateHelper'
 
 const getIndexByScreenId = (screenList, selectedPageId) => {
     return _.findIndex(screenList, (s) => {

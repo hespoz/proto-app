@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+
 import {DragSource} from 'react-dnd'
 import {ItemTypes} from '../../commons/ItemTypes'
 import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
+
 import _ from 'lodash'
 
 import '../../App.scss'
 import './Element.scss'
 
 import {setResizeState, clearResizeState, resizeElement, selectElement, removeElement} from '../../actions/canvasAction'
+import RunElement from "./RunElement";
 
 let element = null
 let resizeHandle = null
@@ -22,8 +26,11 @@ const elementSource = {
         return props.resizeElementId !== props.id
     },
     beginDrag(props) {
-        const {id, left, top, height, width} = props
-        return {id, left, top, height, width}
+        console.log("beginDrag", props)
+        const {item} = props
+
+
+        return {id:item.id, left:item.left, top:item.top, height:item.height, width:item.width}
     }
 }
 
@@ -64,9 +71,9 @@ export default class Element extends Component {
     }
 
     startResizing = (e) => {
-        this.props.dispatch(setResizeState(this.props.id))
+        this.props.dispatch(setResizeState(this.props.item.id))
 
-        this.props.dispatch(resizeElement(1, this.props.id, this.props.height + (e.clientY - this.state.lastPositionY), this.props.width + (e.clientX - this.state.lastPositionX)))
+        this.props.dispatch(resizeElement(1, this.props.item.id, this.props.item.height + (e.clientY - this.state.lastPositionY), this.props.item.width + (e.clientX - this.state.lastPositionX)))
 
         this.setState({
             lastPositionX: e.clientX,
@@ -81,27 +88,27 @@ export default class Element extends Component {
     }
 
     isElementSelected = () => {
-        return _.findIndex(this.props.selectedElements, (o) => { return o == this.props.id }) !== -1
+        return _.findIndex(this.props.selectedElements, (o) => { return o == this.props.item.id }) !== -1
     }
 
     selectElement = () => {
-        this.props.dispatch(selectElement(1, this.props.id, this.props.onHold))
+        this.props.dispatch(selectElement(1, this.props.item.id, this.props.onHold))
     }
 
     render() {
 
         const {
             hideSourceOnDrag,
-            left,
-            top,
             connectDragSource,
             isDragging,
-            children
+            item
         } = this.props
 
 
-        const height = `${this.props.height}px`
-        const width = `${this.props.width}px`
+        const left = item.left
+        const top = item.top
+        const height = `${item.height}px`
+        const width = `${item.width}px`
 
 
         if (isDragging && hideSourceOnDrag) {
@@ -111,7 +118,7 @@ export default class Element extends Component {
         return connectDragSource(
             <div id={`box-${this.state.id}`} className={`element-wrapper ${this.isElementSelected() ? 'selected' : ''}`} style={{...style, left, top, height, width }} onClick={this.selectElement}>
 
-                <div id={`remove-${this.state.id}`} className='remove-btn'  style={!this.isElementSelected() ? { display:'none' } : {}} onClick={(e) => this.props.dispatch(removeElement(1, this.props.id))}>
+                <div id={`remove-${this.state.id}`} className='remove-btn'  style={!this.isElementSelected() ? { display:'none' } : {}} onClick={(e) => this.props.dispatch(removeElement(1, this.props.item.id))}>
                     x
                 </div>
 
@@ -121,9 +128,22 @@ export default class Element extends Component {
                 }}
                 ></div>
 
-                {children}
+                {this.props.children}
 
             </div>,
         )
     }
+}
+
+
+Element.propTypes = {
+    key: PropTypes.number,
+    item: PropTypes.shape({
+        id: PropTypes.string,
+        left: PropTypes.number,
+        top: PropTypes.number,
+        height: PropTypes.number,
+        width: PropTypes.number
+    }),
+    hideSourceOnDrag:PropTypes.bool
 }
