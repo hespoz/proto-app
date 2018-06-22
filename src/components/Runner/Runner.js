@@ -27,12 +27,7 @@ export default withRouter(class Runner extends Component {
     renderScreen = () => {
         const { currentScreenId, screenList } = this.props
 
-        if(currentScreenId) {
-            return <Browser running screen={_.find(screenList, (screen) => screen.id === currentScreenId)}/>
-        } else {
-            return <Browser running screen={screenList[0]}/>
-        }
-
+        return <Browser running screen={currentScreenId ? _.find(screenList, (screen) => screen.id === currentScreenId) : screenList[0]}/>
     }
 
     render() {

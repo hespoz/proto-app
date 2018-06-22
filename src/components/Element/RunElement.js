@@ -13,16 +13,25 @@ const style = {
 })
 export default class RunElement extends Component {
 
+
+
     render() {
 
-        const left = this.props.left
-        const top = this.props.top
-        const height = `${this.props.height}px`
-        const width = `${this.props.width}px`
+        const {
+            item
+        } = this.props
+
+
+        const left = item.left
+        const top = item.top
+        const height = `${item.height}px`
+        const width = `${item.width}px`
+
 
         return (
-            <div key={this.props.key} className="element-wrapper" style={{...style, left, top, height, width }} onClick={() => {
+            <div key={this.props.key} className="clickable-element-wrapper" style={{...style, left, top, height, width }} onClick={() => {
                 //If there is more than one action show a dialog with the options. Else change page.
+                alert(1)
             }}>
                 {this.props.children}
             </div>

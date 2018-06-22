@@ -27,6 +27,8 @@ const elementTarget = {
 
         const item = monitor.getItem()
 
+        console.log("rapido", item)
+
         if (item.id !== undefined) {
             const delta = monitor.getDifferenceFromInitialOffset()
             props.dispatch(updateElementPosition(item.id, delta.x, delta.y))
