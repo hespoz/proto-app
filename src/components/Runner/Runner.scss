@@ -1,0 +1,11 @@
+.options-container {
+  display:flex;
+  flex-direction: column;
+
+  .action {
+    border:1px solid grey;
+    border-radius: 3px;
+    cursor:pointer;
+  }
+
+}

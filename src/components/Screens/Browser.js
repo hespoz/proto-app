@@ -6,7 +6,6 @@ import RunElement from '../Element/RunElement'
 
 const Browser = (props) => {
 
-    console.log("Browser", props.screen.elements)
     return (
         <div id="canvasDrawer" className={`browser ${props.thubnail ? 'thubnail' : ''}`}>
             <div className='nav-bar'>
@@ -28,7 +27,6 @@ const Browser = (props) => {
 
                     } else {
 
-                        console.log("Antes de renderizar", item)
                         return (
                             <Element key={index} item={item} hideSourceOnDrag>
                                 <ContentElement id={item.id} type={item.type} label={item.label} dropedElement/>
