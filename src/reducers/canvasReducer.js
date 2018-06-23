@@ -45,21 +45,20 @@ const getLastSelectedElement = (state, selectedElementId) => {
 }
 
 const elementsOperation = (elements, selectedElementId, transformFn) => {
-    return elements.map((element) => {
-        if (element.id === selectedElementId) {
-            element = transformFn !== undefined ? transformFn(element) : element
+    return elements.map((e) => {
+        if (e.id === selectedElementId) {
+            e = transformFn !== undefined ? transformFn(e) : e
         }
-        return element
+        return e
     })
 }
 
 const updateProjectScreenList = (state, selectedElementId, fn) => {
     let screenListCopy = _.cloneDeep(state.screenList)
     const index = getIndexByScreenId(state.screenList, state.selectedPageId)
-    screenListCopy[index].elements = elementsOperation(state.screenList[index].elements, state.selectedElementInfo.id, fn)
+    screenListCopy[index].elements = elementsOperation(state.screenList[index].elements, selectedElementId, fn)
     return screenListCopy
 }
-
 
 const addNewAction = (state) => {
     return {
@@ -327,9 +326,12 @@ const addNewPage = (state, action) => {
     let newElements = []
 
     if (action.copyState) {
+        console.log("Copy elements")
         newElements = screen.elements.map((elm) => {
 
             let elmCopy = _.cloneDeep(elm)
+
+            elmCopy.id = uuidv4()
 
             elmCopy.props = generateHelper(elmCopy.type, countFieldElements(state))
 
