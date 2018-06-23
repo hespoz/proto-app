@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {ControlType} from '../../commons/ControlType'
-import {moveToState} from '../../actions/runnerAction'
+import {moveToState, openFlowDialog} from '../../actions/runnerAction'
+
 
 import _ from 'lodash'
 
@@ -17,16 +18,14 @@ const style = {
 })
 export default class RunElement extends Component {
 
-
     onElementClick = (item) => {
         switch(item.type) {
             case ControlType.BUTTON:
                 const actions = _.get(item, 'props.actions')
                 if (actions) {
                     if(actions.length > 1) {
-                        alert("Open dialog")
+                        this.props.dispatch(openFlowDialog(actions))
                     } else {
-                        console.log(actions[0].goToState.value)
                         this.props.dispatch(moveToState(actions[0].goToState.value))
                     }
                 }
