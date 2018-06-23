@@ -21,6 +21,12 @@ export default class ContentElement extends Component {
         label:this.props.label
     }
 
+    componentWillReceiveProps = (props) => {
+        this.setState({
+            label:props.label
+        })
+    }
+
     onDoubleClickHandler = () => {
         this.setState({edit: true})
     }
@@ -80,6 +86,7 @@ export default class ContentElement extends Component {
     }
 
     renderEditable = () => {
+
 
         const label = (
             <div className={this.props.dropedElement ? 'content' : ''} onDoubleClick={this.props.dropedElement ? this.onDoubleClickHandler : null}>

@@ -1,6 +1,10 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import {ControlType} from '../../commons/ControlType'
+import {moveToState} from '../../actions/runnerAction'
+
+import _ from 'lodash'
 
 const style = {
 
@@ -14,6 +18,24 @@ const style = {
 export default class RunElement extends Component {
 
 
+    onElementClick = (item) => {
+        switch(item.type) {
+            case ControlType.BUTTON:
+                const actions = _.get(item, 'props.actions')
+                if (actions) {
+                    if(actions.length > 1) {
+                        alert("Open dialog")
+                    } else {
+                        console.log(actions[0].goToState.value)
+                        this.props.dispatch(moveToState(actions[0].goToState.value))
+                    }
+                }
+                console.log(item)
+                break;
+            default:
+                break;
+        }
+    }
 
     render() {
 
@@ -31,7 +53,7 @@ export default class RunElement extends Component {
         return (
             <div key={this.props.key} className="clickable-element-wrapper" style={{...style, left, top, height, width }} onClick={() => {
                 //If there is more than one action show a dialog with the options. Else change page.
-                alert(1)
+                this.onElementClick(item)
             }}>
                 {this.props.children}
             </div>

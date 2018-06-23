@@ -94,6 +94,7 @@ export default withRouter(class TargetBox extends Component {
 
     getSelectedScreen = () => {
 
+
         let screenListCopy = _.cloneDeep(this.props.screenList)
 
         const index = _.findIndex(screenListCopy, (s) => {

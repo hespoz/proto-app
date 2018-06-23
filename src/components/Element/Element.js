@@ -92,6 +92,7 @@ export default class Element extends Component {
     }
 
     selectElement = () => {
+        console.log(this.props.item.id)
         this.props.dispatch(selectElement(1, this.props.item.id, this.props.onHold))
     }
 
